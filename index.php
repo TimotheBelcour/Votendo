@@ -43,9 +43,9 @@
         Le site utilise un <strong>scrutin majoritaire à un tour </strong>:
       </p>
       <ul class ="intro__list">
-        <li>📌 <strong>1 compte utilisateur = 1 vote</strong></li>
-        <li>📌 Chaque utilisateur choisit un seul jeu parmi la liste proposée</li>
-        <li>📌 Le jeu qui obtient le plus de voix est élu GOTY Votendo</li>
+        <li><strong>1 compte utilisateur = 1 vote</strong></li>
+        <li>Chaque utilisateur choisit un seul jeu parmi la liste proposée</li>
+        <li>Le jeu qui obtient le plus de voix est élu GOTY Votendo</li>
       </ul>
       <p>
         Ce mode de scrutin est simple à comprendre et adapté à un vote en ligne
