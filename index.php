@@ -44,7 +44,7 @@
       </p>
       <ul class ="intro__list">
         <li>📌 <strong>1 compte utilisateur = 1 vote</strong></li>
-        <li>📌 Chaque utilisateur choisit un suel jeu parmi la liste proposée</li>
+        <li>📌 Chaque utilisateur choisit un seul jeu parmi la liste proposée</li>
         <li>📌 Le jeu qui obtient le plus de voix est élu GOTY Votendo</li>
       </ul>
       <p>
@@ -59,7 +59,7 @@
         <li>Parcourir la liste des jeux sur la page <strong>Vote</strong></li>
         <li>Se connecter / créer un compte (plus tard dans le projet)</li>
         <li>Choisir son jeu préféré et valider son vote</li>
-        <li>Consulter le classement sur la page<strong>Résultats</strong></li>
+        <li>Consulter le classement sur la page <strong>Résultats</strong></li>
       </ol>
     </div>
   </div>
