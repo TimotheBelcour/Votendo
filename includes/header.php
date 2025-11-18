@@ -23,6 +23,7 @@
           <li><a href="vote.php" class="main-nav__link">Vote</a></li>
           <li><a href="resultats.php" class="main-nav__link">Résultats</a></li>
           <li><a href="login.php" class="main-nav__link">Se connecter</a></li>
+          <li><a href="contact.php" class="main-nav__link">Contact</a></li>
           <li><a href="apropos.php" class="main-nav__link">À propos</a></li>
         </ul>
       </nav>
