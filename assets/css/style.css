@@ -431,3 +431,80 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* PAGE RÉSULTATS */
+.page--results {
+  padding: 48px 0 64px;
+}
+
+.section--results {
+  margin-top: 16px;
+}
+
+/* Liste des résultats (classement) */
+.results-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Carte d’un jeu dans le classement */
+.results-item {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Ligne du haut : titre + nombre de votes */
+.results-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.results-item__title {
+  font-weight: 600;
+}
+
+.results-item__studio {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.results-item__votes {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Barre de progression */
+.results-item__bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.results-item__bar-fill {
+  height: 100%;
+  background-color: var(--red);
+  border-radius: inherit;
+}
+
+/* On met un léger accent visuel sur le leader */
+.results-item--winner {
+  border-color: var(--red);
+}
+
+.results-item--winner .results-item__title::after {
+  content: " ★";
+  color: var(--red);
+  font-size: 14px;
+}

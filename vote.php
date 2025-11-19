@@ -5,7 +5,7 @@
   <!-- Bandeau d’intro -->
   <section class="vote-hero">
     <div class="container">
-      <p class="hero__eyebrow">🗳️ Vote</p>
+      <p class="hero__eyebrow">Vote</p>
       <h1 class="hero__title">Choisis ton jeu de l’année</h1>
       <p class="hero__subtitle">
         Parcours les jeux nominés et sélectionne celui que tu considères comme le meilleur GOTY.
