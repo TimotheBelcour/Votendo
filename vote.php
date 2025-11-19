@@ -26,7 +26,7 @@
         <!-- Carte jeu 1 -->
         <article class="game-card">
           <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/mario-odyssey.jpeg" alt="Super Mario Odyssey" class="game-card__image">
+            <img src="assets/img/jeux/mario-odyssey.jpg" alt="Super Mario Odyssey" class="game-card__image">
             <span class="game-card__tag">Action / Aventure</span>
           </div>
           <div class="game-card__body">
@@ -44,7 +44,7 @@
         <!-- Carte jeu 2 -->
         <article class="game-card">
           <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/zelda-totk.jpeg" alt="Zelda: Tears of the Kingdom" class="game-card__image">
+            <img src="assets/img/jeux/zelda-totk.jpg" alt="Zelda: Tears of the Kingdom" class="game-card__image">
             <span class="game-card__tag">Action / RPG</span>
           </div>
           <div class="game-card__body">
@@ -62,7 +62,7 @@
         <!-- Carte jeu 3 -->
         <article class="game-card">
           <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/mk8-deluxe.jpeg" alt="Mario Kart 8 Deluxe" class="game-card__image">
+            <img src="assets/img/jeux/mario-kart-8.jpg" alt="Mario Kart 8 Deluxe" class="game-card__image">
             <span class="game-card__tag">Course</span>
           </div>
           <div class="game-card__body">
