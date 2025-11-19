@@ -14,7 +14,6 @@
     <div class="container header__content">
       <a href="index.php" class="logo">
         <img src="assets/img/Votendo.svg" alt="Logo Votendo" class="logo__img">
-        <span class="logo__text">Votendo</span>
       </a>
 
       <nav class="main-nav">

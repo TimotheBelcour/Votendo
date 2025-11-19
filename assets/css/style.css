@@ -1,12 +1,31 @@
 :root {
-  --red: #E60012;
-  --bg: #f5f5f5;
-  --text-main: #111111;
-  --text-muted: #555555;
-  --border-soft: #e0e0e0;
-  --radius-lg: 16px;
+  --red: #E60012;                          /* Rouge Nintendo */
+
+  /* COULEURS DE FOND GLOBALES */
+  --bg: #1A1A1A;                           /* Fond principal très foncé mais pas noir */
+  --bg-panel: #2A2A2A;                     /* Panneaux gris foncé */
+  --bg-card: #F8F8F8;                      /* Pour les cartes blanches style Nintendo */
+
+  /* FORM INPUTS (contact + login) */
+  --input-bg: #2A2A2A;                     /* Fond des champs */
+  --input-border: rgba(255,255,255,0.22);  /* Bordure claire */
+  --input-text: #FFFFFF;                   /* Texte dans les champs */
+
+  /* FOOTER */
+  --footer-bg: #E60012;                    /* Rouge Nintendo */
+  --footer-text: #FFFFFF;
+
+  /* TEXTE GLOBAL*/
+  --text-main: #FFFFFF;                    /* Texte principal sur fond sombre */
+  --text-muted: #B3B3B3;                  /* Texte secondaire sur fond sombre */
+
+  /* BORDURES & OMBRES */
+  --border-soft: rgba(255, 255, 255, 0.15);
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* RADIUS & FONT */
   --radius-md: 8px;
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --radius-lg: 16px;
   --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -33,9 +52,9 @@ body {
 
 /* HEADER */
 .site-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-soft);
+  background-color: var(--red);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .header__content {
@@ -55,14 +74,8 @@ body {
 }
 
 .logo__img {
-  height: 32px;
+  height: 48px;
   width: auto;
-}
-
-.logo__text {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--text-main);
 }
 
 /* Navigation principale */
@@ -77,16 +90,17 @@ body {
 
 .main-nav__link {
   font-size: 14px;
+  color: #ffffff;
   text-decoration: none;
-  color: var(--text-muted);
   padding-bottom: 4px;
   border-bottom: 2px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
 }
 
 .main-nav__link:hover {
-  color: var(--text-main);
-  border-color: var(--red);
+  color: #ffffff;
+  border-color: #ffffff;
+  opacity: 0.85;
 }
 
 /* HERO */
@@ -145,10 +159,9 @@ body {
 /* FOOTER */
 
 .site-footer {
-  border-top: 1px solid var(--border-soft);
-  padding: 24px 0 32px;
-  background-color: #ffffff;
-  margin-top: 40px;
+  color: var(--footer-text);
+  background-color: var(--footer-bg);
+  border-top: none;
 }
 
 .footer__content {
@@ -166,18 +179,18 @@ body {
 
 .footer-nav__link {
   font-size: 12px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
 }
 
 .footer-nav__link:hover {
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .footer__brand {
   margin: 0;
   font-size: 12px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* PAGE CONTACT */
@@ -275,16 +288,17 @@ body {
 .form__field textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--border-soft);
   border-radius: var(--radius-md);
-  background-color: #ffffff;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
   font-size: 15px;
 }
 
 /* Placeholders un peu plus discrets */
 .form__field input::placeholder,
 .form__field textarea::placeholder {
-  color: var(--text-muted);
+  color: #888888;
 }
 
 /* Textarea : taille mini mais redimensionnable verticalement */
@@ -355,6 +369,7 @@ body {
 /* Carte de jeu */
 .game-card {
   background-color: #ffffff;
+  color: #111111;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   overflow: hidden;
@@ -402,13 +417,13 @@ body {
 
 .game-card__meta {
   font-size: 12px;
-  color: var(--text-muted);
+  color: #555555;
   margin: 0;
 }
 
 .game-card__description {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #555555;
   margin: 4px 0 8px;
 }
 
@@ -474,13 +489,13 @@ body {
 
 .results-item__studio {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #555555;
   margin-left: 4px;
 }
 
 .results-item__votes {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #555555;
 }
 
 /* Barre de progression */
@@ -518,10 +533,12 @@ body {
 .login-card {
   max-width: 400px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: var(--bg-panel);
+  color: #ffffff;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   padding: 24px 24px 28px;
+  border-top: 4px solid var(--red);    
 }
 
 /* Formulaire vertical */
@@ -529,6 +546,21 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+/* Inputs du login (même style que contact) */
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 15px;
+}
+
+.login-card input::placeholder {
+  color: #888888;
 }
 
 /* Petit texte d’aide sous le bouton */
