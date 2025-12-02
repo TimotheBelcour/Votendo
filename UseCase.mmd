@@ -1,0 +1,97 @@
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "primaryColor": "#e7f1ff",
+    "primaryTextColor": "#0b1220",
+    "primaryBorderColor": "#0b1220",
+    "lineColor": "#93c5fd",
+    "fontSize": "14px"
+  }
+}}%%
+flowchart LR
+    %% =====================
+    %% Acteurs
+    %% =====================
+    Electeur[« Acteur »<br/>Électeur]
+    Admin[« Acteur »<br/>Administrateur]
+    Studio[« Acteur »<br/>Studio de jeux vidéo]
+
+    %% =====================
+    %% Cas d'utilisation
+    %% =====================
+    uc_Inscription(("S'inscrire au site"))
+    uc_SeConnecter(("Se connecter"))
+    uc_Voter(("Voter pour un jeu<br/>dans une catégorie"))
+    uc_ConfirmerVote(("Confirmer son vote"))
+    uc_ConsulterCategoriesVote(("Consulter les catégories de vote"))
+    uc_ConsulterJeuxCategorie(("Consulter les jeux<br/>d'une catégorie"))
+    uc_ConsulterResultats(("Consulter les résultats<br/>après clôture du scrutin"))
+    uc_ConsulterRecapParticipation(("Consulter le récapitulatif<br/>de participation"))
+    uc_StatParticipation(("Consulter les statistiques<br/>de participation"))
+    
+    uc_PublierResultats(("Publier les résultats"))
+    uc_CalculerResultats(("Calculer les résultats<br/>du scrutin"))
+    uc_OuvrirScrutin(("Ouvrir le scrutin"))
+    uc_CloturerScrutin(("Clôturer le scrutin"))
+    uc_ParamDates(("Paramétrer les dates<br/>d'ouverture et de clôture"))
+    uc_GererScrutin(("Créer / Modifier / Supprimer<br/>un scrutin"))
+    uc_CreerCategoriesScrutin(("Créer les catégories du scrutin"))
+
+    uc_GererJeuxNomines(("Gérer les jeux nominés"))
+    uc_ConsulterJeuxStudio(("Consulter les catégories où<br/>ses jeux sont nominés"))
+    uc_GererFichesJeux(("Gérer les fiches de ses jeux"))
+    uc_ConsulterResultatsJeux(("Consulter les résultats<br/>pour ses jeux"))
+
+    %% =====================
+    %% Relations Acteur → Cas d'utilisation
+    %% =====================
+
+    %% Électeur
+    Electeur --> uc_Inscription
+    Electeur --> uc_SeConnecter
+    Electeur --> uc_ConsulterCategoriesVote
+    Electeur --> uc_ConsulterJeuxCategorie
+    Electeur --> uc_Voter
+    Electeur --> uc_ConfirmerVote
+    Electeur --> uc_ConsulterResultats
+
+    %% Studio de jeux vidéo
+    Studio --> uc_GererFichesJeux
+    Studio --> uc_ConsulterJeuxStudio
+    Studio --> uc_ConsulterResultatsJeux
+
+    %% Administrateur
+    Admin --> uc_SeConnecter
+    Admin --> uc_ParamDates
+    Admin --> uc_GererScrutin
+    Admin --> uc_CreerCategoriesScrutin
+    Admin --> uc_OuvrirScrutin
+    Admin --> uc_CloturerScrutin
+    Admin --> uc_PublierResultats
+    Admin --> uc_StatParticipation
+    Admin --> uc_GererJeuxNomines
+
+    %% =====================
+    %% Relations « include »
+    %% =====================
+    uc_Voter -.->|<<include>>| uc_ConsulterCategoriesVote
+    uc_Voter -.->|<<include>>| uc_ConsulterJeuxCategorie
+    uc_ConfirmerVote -.->|<<include>>| uc_Voter
+
+    uc_SeConnecter -.->|<<include>>| uc_ConsulterRecapParticipation
+    uc_CloturerScrutin -.->|<<include>>| uc_CalculerResultats
+
+    %% =====================
+    %% Relations « extend »
+    %% =====================
+    uc_ConsulterResultatsJeux -.->|<<extend>>| uc_ConsulterResultats
+
+    %% =====================
+    %% Styles
+    %% =====================
+    classDef actor fill:#ffffff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#0b1220,stroke:#60a5fa,stroke-width:2px,color:#e5e7eb,rx:25,ry:25;
+    linkStyle default stroke:#60a5fa,stroke-width:1.5px;
+
+    class Electeur,Admin,Studio actor;
+    class uc_Inscription,uc_SeConnecter,uc_Voter,uc_ConfirmerVote,uc_ConsulterCategoriesVote,uc_ConsulterJeuxCategorie,uc_ConsulterResultats,uc_ConsulterRecapParticipation,uc_StatParticipation,uc_PublierResultats,uc_CalculerResultats,uc_OuvrirScrutin,uc_CloturerScrutin,uc_ParamDates,uc_GererScrutin,uc_CreerCategoriesScrutin,uc_GererJeuxNomines,uc_GererFichesJeux,uc_ConsulterJeuxStudio,uc_ConsulterResultatsJeux usecase;
