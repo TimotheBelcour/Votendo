@@ -1,0 +1,67 @@
+sequenceDiagram
+    %% ======================
+    %% Participants
+    %% ======================
+    actor E as Électeur
+    participant UI as Interface Web
+    participant CA as Contrôleur Auth
+    participant CV as Contrôleur Vote
+    participant DB as BDD MySQL
+
+    %% ======================
+    %% Authentification
+    %% ======================
+    E ->> UI: Saisit email + mot de passe<br/>et valide le formulaire
+    UI ->> CA: POST /login (email, motDePasse)
+
+    CA ->> DB: SELECT * FROM UTILISATEUR<br/>WHERE email = ?
+    activate DB
+    DB -->> CA: Utilisateur trouvé / non trouvé
+    deactivate DB
+
+    alt MotDePasseCorrect
+        CA -->> UI: Authentification OK<br/>rediriger vers page "Voter"
+        UI -->> E: Afficher page d'accueil<br/>/ menu "Voter"
+    else MotDePasseIncorrect
+        CA -->> UI: Authentification échouée<br/>+ message d'erreur
+        UI -->> E: Réafficher formulaire<br/>+ "Identifiants incorrects"
+    end
+
+    %% ======================
+    %% Accès à la page de vote
+    %% ======================
+    E ->> UI: Cliquer sur "Voter"
+    UI ->> CV: GET /vote
+
+    CV ->> DB: SELECT catégories valides<br/>+ jeux nominés (JOIN)
+    activate DB
+    DB -->> CV: Liste catégories + jeux
+    deactivate DB
+
+    CV -->> UI: Données pour la page de vote
+    UI -->> E: Afficher page de vote<br/>(catégories + jeux)
+
+    %% ======================
+    %% Envoi du vote
+    %% ======================
+    E ->> UI: Sélectionner un jeu<br/>et valider son vote
+    UI ->> CV: POST /vote(idUtilisateur,<br/>idCategorie, idJeu, timestamp)
+
+    CV ->> DB: SELECT * FROM EMARGEMENT<br/>WHERE idUtilisateur = ?<br/>AND idCategorie = ?
+    activate DB
+    DB -->> CV: Emargement trouvé / non trouvé
+    deactivate DB
+
+    alt DejaVote
+        CV -->> UI: Refuser vote<br/>"Vous avez déjà voté<br/>pour cette catégorie"
+        UI -->> E: Afficher message<br/>"Vous avez déjà voté<br/>pour cette catégorie"
+    else PremierVote
+        CV ->> DB: INSERT INTO EMARGEMENT(...)
+        CV ->> DB: INSERT INTO BULLETIN(...)
+        activate DB
+        DB -->> CV: OK
+        deactivate DB
+
+        CV -->> UI: Confirmation de vote
+        UI -->> E: Afficher confirmation<br/>"Votre vote a été pris en compte"
+    end
