@@ -61,20 +61,31 @@
 
         <!-- Carte jeu 3 -->
         <article class="game-card">
-          <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/mario-kart-8.jpg" alt="Mario Kart 8 Deluxe" class="game-card__image">
-            <span class="game-card__tag">Course</span>
-          </div>
-          <div class="game-card__body">
-            <h3 class="game-card__title">Mario Kart 8 Deluxe</h3>
-            <p class="game-card__meta">Nintendo Switch • 2017</p>
-            <p class="game-card__description">
-              Des courses endiablées entre amis, de nouveaux circuits et un mode bataille amélioré.
-            </p>
-            <button class="btn btn--primary game-card__button" type="button">
-              Voter pour ce jeu
-            </button>
-          </div>
+          <a href="jeu.php?id=3" class="game-card">
+            <div class="game-card__image-wrapper">
+              <img
+                src="assets/img/jeux/mario-kart-8-deluxe.jpg"
+                alt="Mario Kart 8 Deluxe"
+                class="game-card__image"
+              >
+            </div>
+
+            <div class="game-card__body">
+              <h3 class="game-card__title">Mario Kart 8 Deluxe</h3>
+
+              <p class="game-card__meta">
+                Nintendo Switch · 2017
+              </p>
+
+              <p class="game-card__description">
+                Un jeu de course fun et accessible, parfait pour jouer en famille ou entre amis.
+              </p>
+
+              <button class="btn btn--primary game-card__button">
+                Voir le jeu
+              </button>
+            </div>
+          </a>
         </article>
 
         <!-- Pour ajouter d’autres jeux, il suffit de dupliquer ce bloc <article> -->
