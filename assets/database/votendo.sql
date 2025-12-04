@@ -23,6 +23,8 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+USE votendo;
+
 --
 -- Structure de la table `administrateur`
 --
