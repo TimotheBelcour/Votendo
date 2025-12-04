@@ -1,16 +1,5 @@
 <?php
-$host = '127.0.0.1';      // or 'localhost'
-$user = 'root';           // your MySQL username
-$password = '';  // your root password
-$database = 'votendo';    // the name of your database
-
-// Create connection
-$conn = new mysqli($host, $user, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/config.php';
 
 // Démarrer la session si elle n'est pas déjà active
 if (session_status() === PHP_SESSION_NONE) {
