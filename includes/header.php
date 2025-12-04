@@ -11,6 +11,44 @@ $conn = new mysqli($host, $user, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+// Démarrer la session si elle n'est pas déjà active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Vérifier si l'utilisateur est connecté
+$isLoggedIn = isset($_SESSION['user_id']);
+$userName = $_SESSION['user_name'] ?? '';
+$userId = $_SESSION['user_id'] ?? '';
+
+// Fonction pour déterminer le type d'utilisateur et la page de redirection
+$userPageUrl = '';
+if ($isLoggedIn) {
+    // Vérifier si c'est un administrateur
+    $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $adminResult = $stmt->get_result();
+    
+    if ($adminResult->num_rows > 0) {
+        $userPageUrl = 'espaceAdministrateur.php';
+    } else {
+        // Vérifier si c'est un candidat
+        $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $candidatResult = $stmt->get_result();
+        
+        if ($candidatResult->num_rows > 0) {
+            $userPageUrl = 'espaceCandidat.php';
+        } else {
+            // C'est un membre normal
+            $userPageUrl = 'espaceMembre.php';
+        }
+    }
+    $stmt->close();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -34,8 +72,18 @@ if ($conn->connect_error) {
           <li><a href="resultats.php" class="main-nav__link">Résultats</a></li>
           <li><a href="apropos.php" class="main-nav__link">À propos</a></li>
           <li><a href="contact.php" class="main-nav__link">Contact</a></li>
-          <li><a href="login.php" class="main-nav__link">Se connecter</a></li>
-          <li><a href="inscription.php" class="main-nav__link">S'inscrire</a></li>
+          
+          <?php if (!$isLoggedIn): ?>
+            <!-- Utilisateur non connecté -->
+            <li><a href="login.php" class="main-nav__link">Se connecter</a></li>
+            <li><a href="inscription.php" class="main-nav__link">S'inscrire</a></li>
+          <?php else: ?>
+            <!-- Utilisateur connecté -->
+            <li><a href="<?= htmlspecialchars($userPageUrl) ?>" class="main-nav__link">
+                <?= htmlspecialchars($userName) ?>
+              </a></li>
+            <li><a href="logout.php" class="main-nav__link">Déconnexion</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
     </div>
