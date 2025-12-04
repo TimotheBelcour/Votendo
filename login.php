@@ -1,6 +1,12 @@
 <?php
-// login.php : page de connexion
-// Ici, pas de vraie authentification : on vérifie juste que les champs sont remplis.
+// login.php : page de connexion avec authentification réelle
+
+// Démarrer la session si elle n'est pas déjà active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include 'includes/header.php';
 
 $errors  = [];
 $success = false;
@@ -11,31 +17,39 @@ $password = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupération + nettoyage
     $email    = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    // Validation e-mail
-    if ($email === '') {
-        $errors['email'] = 'Merci d’indiquer votre adresse e-mail.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'L’adresse e-mail n’est pas valide.';
+    // Rechercher l'utilisateur par email
+    $stmt = $conn->prepare("SELECT idutilisateur, nomUtilisateur, passwordHash FROM utilisateur WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        // Vérifier le mot de passe avec password_verify
+        if (password_verify($password, $user['passwordHash'])) {
+            // Authentification réussie
+            $success = true;
+            // Créer la session
+            $_SESSION['user_id'] = $user['idutilisateur'];
+            $_SESSION['user_name'] = $user['nomUtilisateur'];
+            $_SESSION['user_email'] = $email;
+            // Redirection après 2 secondes
+            header("refresh:2;url=index.php");
+        } else {
+            // Mot de passe incorrect
+            $errors['general'] = 'Email ou mot de passe incorrect.';
+        }
+    } else {
+        // Email non trouvé
+        $errors['general'] = 'Email ou mot de passe incorrect.';
     }
 
-    // Validation mot de passe
-    if ($password === '') {
-        $errors['password'] = 'Merci d’indiquer votre mot de passe.';
-    } elseif (mb_strlen($password) < 6) {
-        $errors['password'] = 'Le mot de passe doit contenir au moins 6 caractères.';
-    }
-
-    // En MVP1 : si pas d’erreur, on considère la "connexion" comme réussie
-    if (empty($errors)) {
-        $success = true;
-        // Ici, plus tard : vérification en base de données + création de session
-    }
+    $stmt->close();
 }
 ?>
-
-<?php include 'includes/header.php'; ?>
 
 <main class="page page--login">
 
@@ -45,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <p class="hero__eyebrow">Se connecter</p>
       <h1 class="hero__title">Connexion à Votendo</h1>
       <p class="hero__subtitle">
-        Cette page illustre l’écran de connexion. En MVP1, aucune authentification réelle n’est encore mise en place.
+        Connectez-vous pour participer à nos votes et découvrir les favoris de la communauté.
       </p>
     </div>
   </section>
@@ -57,14 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php if ($success): ?>
           <div class="alert alert--success">
-            Connexion simulée avec succès<br>
-            (Pour la MVP1, les comptes utilisateurs ne sont pas encore gérés.)
+            ✓ Connexion réussie!<br>
+            Redirection en cours...
+          </div>
+        <?php endif; ?>
+
+        <?php if (!empty($errors)): ?>
+          <div class="alert alert--error">
+            <?= htmlspecialchars($errors['general'], ENT_QUOTES, 'UTF-8') ?>
           </div>
         <?php endif; ?>
 
         <form method="post" class="login-form" novalidate>
           <!-- Email -->
-          <div class="form__field <?= isset($errors['email']) ? 'form__field--error' : '' ?>">
+          <div class="form__field">
             <label for="email">Adresse e-mail</label>
             <input
               type="email"
@@ -74,13 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               placeholder="Ex : timothe@example.com"
               required
             >
-            <?php if (isset($errors['email'])): ?>
-              <p class="form__error"><?= htmlspecialchars($errors['email'], ENT_QUOTES, 'UTF-8') ?></p>
-            <?php endif; ?>
           </div>
 
           <!-- Mot de passe -->
-          <div class="form__field <?= isset($errors['password']) ? 'form__field--error' : '' ?>">
+          <div class="form__field">
             <label for="password">Mot de passe</label>
             <input
               type="password"
@@ -89,9 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               placeholder="••••••••"
               required
             >
-            <?php if (isset($errors['password'])): ?>
-              <p class="form__error"><?= htmlspecialchars($errors['password'], ENT_QUOTES, 'UTF-8') ?></p>
-            <?php endif; ?>
           </div>
 
           <div class="form__actions">
@@ -101,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <p class="login-hint">
-            Pour le MVP1, cette page ne fait qu’illustrer la future authentification.
+            Vous n'avez pas de compte? <a href="inscription.php">S'inscrire</a>
           </p>
         </form>
 
