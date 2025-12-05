@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3307
--- Généré le : jeu. 04 déc. 2025 à 14:41
+-- Hôte : 127.0.0.1
+-- Généré le : ven. 05 déc. 2025 à 17:04
 -- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Version de PHP : 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -22,8 +22,6 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-
-USE votendo;
 
 --
 -- Structure de la table `administrateur`
@@ -64,9 +62,15 @@ CREATE TABLE `categorie` (
 
 CREATE TABLE `jeux` (
   `idJeu` int(11) NOT NULL,
+  `idCandidat` int(11) DEFAULT NULL,
   `titre` varchar(45) NOT NULL,
   `studio` varchar(45) NOT NULL,
-  `dateSortie` date NOT NULL
+  `dateSortie` date NOT NULL,
+  `imagePath` varchar(255) DEFAULT NULL,
+  `videoUrl` varchar(255) DEFAULT NULL,
+  `resume` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `isValide` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -146,7 +150,8 @@ ALTER TABLE `categorie`
 -- Index pour la table `jeux`
 --
 ALTER TABLE `jeux`
-  ADD PRIMARY KEY (`idJeu`);
+  ADD PRIMARY KEY (`idJeu`),
+  ADD KEY `fk_jeux_candidats` (`idCandidat`);
 
 --
 -- Index pour la table `nominations`
@@ -160,7 +165,9 @@ ALTER TABLE `nominations`
 -- Index pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  ADD PRIMARY KEY (`idutilisateur`);
+  ADD PRIMARY KEY (`idutilisateur`),
+  ADD UNIQUE KEY `uniq_email` (`email`),
+  ADD UNIQUE KEY `nomUtilisateur` (`nomUtilisateur`);
 
 --
 -- Index pour la table `votants`
@@ -185,13 +192,13 @@ ALTER TABLE `votes`
 -- AUTO_INCREMENT pour la table `administrateur`
 --
 ALTER TABLE `administrateur`
-  MODIFY `idAdministrateur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idAdministrateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `candidats`
 --
 ALTER TABLE `candidats`
-  MODIFY `idCandidats` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCandidats` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `categorie`
@@ -215,7 +222,7 @@ ALTER TABLE `nominations`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `idutilisateur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idutilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `votants`
@@ -246,6 +253,12 @@ ALTER TABLE `candidats`
   ADD CONSTRAINT `candidats_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idutilisateur`);
 
 --
+-- Contraintes pour la table `jeux`
+--
+ALTER TABLE `jeux`
+  ADD CONSTRAINT `fk_jeux_candidats` FOREIGN KEY (`idCandidat`) REFERENCES `candidats` (`idCandidats`);
+
+--
 -- Contraintes pour la table `nominations`
 --
 ALTER TABLE `nominations`
@@ -256,7 +269,7 @@ ALTER TABLE `nominations`
 -- Contraintes pour la table `votants`
 --
 ALTER TABLE `votants`
-  ADD CONSTRAINT `votants_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idutilisateur`);
+  ADD CONSTRAINT `votants_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENsCES `utilisateur` (`idutilisateur`);
 
 --
 -- Contraintes pour la table `votes`
