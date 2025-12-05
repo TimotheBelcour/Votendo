@@ -1,7 +1,4 @@
 <?php
-//charger la configuration MySQL
-require_once __DIR__ . '/config.php';
-
 // Démarrer la session si elle n'est pas déjà active
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
