@@ -1,5 +1,13 @@
 <?php include 'includes/header.php'; ?>
 
+<?php
+// Récupérer tous les jeux validés
+$sql = "SELECT idJeu, titre, studio, dateSortie, imagePath, resume 
+        FROM jeux
+        WHERE isValide = 1";
+$result = $conn->query($sql);
+?>
+
 <main class="page page--vote">
 
   <!-- Bandeau d’intro -->
@@ -21,77 +29,45 @@
         <p>Voici la sélection Votendo pour cette édition.</p>
       </header>
 
-      <div class="game-list__grid">
+        <div class="game-list__grid">
+            <?php if ($result && $result->num_rows > 0): ?>
+                <?php while ($jeu = $result->fetch_assoc()): ?>
+                    <article class="game-card">
+                        <div class="game-card__image-wrapper">
+                            <img
+                                src="<?php echo htmlspecialchars($jeu['imagePath']); ?>"
+                                alt="<?php echo htmlspecialchars($jeu['titre']); ?>"
+                                class="game-card__image"
+                            >
+                            <span class="game-card__tag">
+                                <?php echo htmlspecialchars($jeu['studio']); ?>
+                            </span>
+                        </div>
 
-        <!-- Carte jeu 1 -->
-        <article class="game-card">
-          <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/mario-odyssey.jpg" alt="Super Mario Odyssey" class="game-card__image">
-            <span class="game-card__tag">Action / Aventure</span>
-          </div>
-          <div class="game-card__body">
-            <h3 class="game-card__title">Super Mario Odyssey</h3>
-            <p class="game-card__meta">Nintendo Switch • 2017</p>
-            <p class="game-card__description">
-              Un voyage coloré autour du monde avec Mario et Cappy, mélangeant plateforme et exploration.
-            </p>
-            <button class="btn btn--primary game-card__button" type="button">
-              Voter pour ce jeu
-            </button>
-          </div>
-        </article>
+                        <div class="game-card__body">
+                            <h3 class="game-card__title">
+                                <?php echo htmlspecialchars($jeu['titre']); ?>
+                            </h3>
 
-        <!-- Carte jeu 2 -->
-        <article class="game-card">
-          <div class="game-card__image-wrapper">
-            <img src="assets/img/jeux/zelda-totk.jpg" alt="Zelda: Tears of the Kingdom" class="game-card__image">
-            <span class="game-card__tag">Action / RPG</span>
-          </div>
-          <div class="game-card__body">
-            <h3 class="game-card__title">Zelda: Tears of the Kingdom</h3>
-            <p class="game-card__meta">Nintendo Switch • 2023</p>
-            <p class="game-card__description">
-              Explore Hyrule et les cieux grâce à une liberté de gameplay incroyable et des pouvoirs uniques.
-            </p>
-            <button class="btn btn--primary game-card__button" type="button">
-              Voter pour ce jeu
-            </button>
-          </div>
-        </article>
+                            <p class="game-card__meta">
+                                <?php echo htmlspecialchars($jeu['dateSortie']); ?>
+                            </p>
 
-        <!-- Carte jeu 3 -->
-        <article class="game-card">
-          <a href="jeu.php?id=3" class="game-card">
-            <div class="game-card__image-wrapper">
-              <img
-                src="assets/img/jeux/mario-kart-8-deluxe.jpg"
-                alt="Mario Kart 8 Deluxe"
-                class="game-card__image"
-              >
-            </div>
+                            <p class="game-card__description">
+                                <?php echo htmlspecialchars($jeu['resume']); ?>
+                            </p>
 
-            <div class="game-card__body">
-              <h3 class="game-card__title">Mario Kart 8 Deluxe</h3>
-
-              <p class="game-card__meta">
-                Nintendo Switch · 2017
-              </p>
-
-              <p class="game-card__description">
-                Un jeu de course fun et accessible, parfait pour jouer en famille ou entre amis.
-              </p>
-
-              <button class="btn btn--primary game-card__button">
-                Voir le jeu
-              </button>
-            </div>
-          </a>
-        </article>
-
-        <!-- Pour ajouter d’autres jeux, il suffit de dupliquer ce bloc <article> -->
-
+                            <button class="btn btn--primary game-card__button" type="button">
+                                Voter pour ce jeu
+                            </button>
+                        </div>
+                    </article>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p>Aucun jeu en compétition pour le moment.</p>
+            <?php endif; ?>
+        </div>
       </div>
-    </div>
   </section>
 
 </main>
