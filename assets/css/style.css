@@ -329,6 +329,34 @@ main.page {
   margin-top: 24px;
 }
 
+/* Alignement et style du summary déroulant des règlements */
+.reglement-summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+}
+.reglement-summary::before {
+  content: "\25B6"; /* triangle pointing right */
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+  color: var(--text-main);
+}
+details[open] .reglement-summary::before {
+  content: "\25BC"; /* triangle pointing down when open */
+}
+.reglement-summary .reglement-title {
+  display: inline-block;
+  font-size: 20px; /* correspond à h2 dans la page */
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+}
+
+
 /* Responsive */
 
 @media (max-width: 768px) {
