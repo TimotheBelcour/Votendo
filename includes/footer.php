@@ -4,7 +4,7 @@
   <footer class="site-footer">
     <div class="container footer__content">
       <nav class="footer-nav">
-        <a href="#" class="footer-nav__link">Mentions légales</a>
+        <a href="mentionsLegales.php" class="footer-nav__link">Mentions légales</a>
         <a href="apropos.php" class="footer-nav__link">À propos</a>
         <a href="contact.php" class="footer-nav__link">Contact</a>
       </nav>

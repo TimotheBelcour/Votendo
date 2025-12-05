@@ -189,6 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <p class="login-hint">
+            En vous inscrivant, vous acceptez nos <a href="mentionsLegales.php">conditions de participation</a>.
+          </p>
+
+          <p class="login-hint">
             Vous avez déjà un compte? <a href="login.php">Se connecter</a>
           </p>
         </form>

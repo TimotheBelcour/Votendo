@@ -211,17 +211,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <details class="reglement-details">
         <summary class="reglement-summary"><span class="reglement-title">Informations réglementaires et conditions de participation</span></summary>
         <div class="reglement-content">
-          <p>
-            Ceci est un texte de remplissage servant d'exemple pour les informations réglementaires et les conditions de participation. Vous pouvez remplacer ce texte par les informations officielles concernant la protection des données, les conditions d'utilisation, l'éligibilité, le déroulement des votes, et toutes autres règles pertinentes.
-          </p>
-
-          <p>
-            Exemple d'éléments à inclure : durée du vote, critères d'éligibilité, traitement des données personnelles, contact pour réclamations et transparence des résultats.
-          </p>
-
-          <p>
-            Remplacez ce paragraphe par le contenu officiel nécessaire pour que les participants soient informés de leurs droits et obligations.
-          </p>
+          <?php 
+            // Extraire le contenu de mentionsLegales.php en excluant header et footer
+            ob_start();
+            include 'mentionsLegales.php';
+            $content = ob_get_clean();
+            // Extraire juste le contenu entre <div class="legal-content"> et </div>
+            preg_match('/<div class="legal-content">(.*?)<\/div>/s', $content, $matches);
+            if (isset($matches[1])) {
+              echo $matches[1];
+            }
+          ?>
         </div>
       </details>
 
