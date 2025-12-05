@@ -76,7 +76,9 @@ if ($isLoggedIn) {
       <nav class="main-nav">
         <ul class="main-nav__list">
           <li><a href="index.php" class="main-nav__link">Accueil</a></li>
-          <li><a href="vote.php" class="main-nav__link">Vote</a></li>
+          <?php if ($isLoggedIn): ?>
+            <li><a href="vote.php" class="main-nav__link">Vote</a></li>
+          <?php endif; ?>
           <li><a href="resultats.php" class="main-nav__link">Résultats</a></li>
           <li><a href="apropos.php" class="main-nav__link">À propos</a></li>
           <li><a href="contact.php" class="main-nav__link">Contact</a></li>
