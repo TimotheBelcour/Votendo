@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['nomUtilisateur'] = "Le nom d'utilisateur est requis.";
     } elseif (strlen($nomUtilisateur) < 3) {
         $errors['nomUtilisateur'] = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
+    } elseif (strlen($nomUtilisateur) > 20) {
+        $errors['nomUtilisateur'] = "Le nom d'utilisateur ne doit pas dépasser 20 caractères.";
     }
 
     // Validation de l'e-mail
@@ -28,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = "L'adresse e-mail est requise.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "L'adresse e-mail n'est pas valide.";
+    } elseif (strlen($email) > 45) {
+        $errors['email'] = "L'adresse e-mail ne doit pas dépasser 45 caractères.";
     }
 
     // Validation du mot de passe
@@ -35,12 +39,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['password'] = "Le mot de passe est requis.";
     } elseif (strlen($password) < 6) {
         $errors['password'] = "Le mot de passe doit contenir au moins 6 caractères.";
+    } elseif (strlen($password) > 20) {
+        $errors['password'] = "Le mot de passe ne doit pas dépasser 20 caractères.";
     } elseif ($password !== $passwordConfirm) {
         $errors['password'] = "Les mots de passe ne correspondent pas.";
     }
 
-    // Si pas d'erreurs, vérifier si l'e-mail existe déjà et insérer l'utilisateur
+    // Si pas d'erreurs, vérifier si l'e-mail et le nom d'utilisateur existent déjà et insérer l'utilisateur
     if (empty($errors)) {
+        // Vérifier si le nom d'utilisateur existe déjà
+        $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE nomUtilisateur = ?");
+        $stmt->bind_param("s", $nomUtilisateur);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $errors['nomUtilisateur'] = "Ce nom d'utilisateur est déjà utilisé.";
+        }
+
         // Vérifier si l'e-mail existe déjà
         $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -49,7 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($result->num_rows > 0) {
             $errors['email'] = "Cette adresse e-mail est déjà utilisée.";
-        } else {
+        }
+
+        if (empty($errors)) {
             // Hash du mot de passe avec PASSWORD_DEFAULT (bcrypt)
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -69,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $stmt->close();
-    }
+        }
 }
 ?>
 
