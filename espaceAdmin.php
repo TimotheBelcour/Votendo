@@ -1,5 +1,5 @@
 <?php
-// admin_jeux.php : espace d'administration pour valider les jeux proposés
+// espaceAdmin.php : espace d'administration pour valider les jeux proposés
 
 include 'includes/header.php';
 
@@ -165,11 +165,11 @@ $pendingGamesResult = $conn->query($sql);
                                 </td>
                                 <td>
                                     <a class="btn btn--small btn--success"
-                                       href="admin_jeux.php?action=valider&idJeu=<?= (int) $game['idJeu'] ?>">
+                                       href="espaceAdmin.php?action=valider&idJeu=<?= (int) $game['idJeu'] ?>">
                                         Valider
                                     </a>
                                     <a class="btn btn--small btn--danger"
-                                       href="admin_jeux.php?action=refuser&idJeu=<?= (int) $game['idJeu'] ?>"
+                                       href="espaceAdmin.php?action=refuser&idJeu=<?= (int) $game['idJeu'] ?>"
                                        onclick="return confirm('Refuser et supprimer ce jeu ?');">
                                         Refuser
                                     </a>

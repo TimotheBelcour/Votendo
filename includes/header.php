@@ -40,7 +40,7 @@ if ($isLoggedIn) {
     $adminResult = $stmt->get_result();
     
     if ($adminResult->num_rows > 0) {
-        $userPageUrl = 'espaceAdministrateur.php';
+        $userPageUrl = 'espaceAdmin.php';
     } else {
         // Vérifier si c'est un candidat
         $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
@@ -82,11 +82,6 @@ if ($isLoggedIn) {
           <li><a href="resultats.php" class="main-nav__link">Résultats</a></li>
           <li><a href="apropos.php" class="main-nav__link">À propos</a></li>
           <li><a href="contact.php" class="main-nav__link">Contact</a></li>
-          
-          <!-- Lien vers l'admin si l'utilisateur est admin -->
-          <?php if (isset($isAdmin) && $isAdmin): ?>
-              <li><a href="admin_jeux.php">Admin</a></li>
-          <?php endif; ?>
 
           <?php if (!$isLoggedIn): ?>
             <!-- Utilisateur non connecté -->

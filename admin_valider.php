@@ -32,5 +32,5 @@ $stmt->bind_param("i", $idJeu);
 $stmt->execute();
 $stmt->close();
 
-header("Location: admin_jeux.php");
+header("Location: espaceAdmin.php");
 exit;
