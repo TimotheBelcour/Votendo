@@ -1,11 +1,11 @@
 <?php
 // espaceAdmin.php : espace d'administration pour valider les jeux proposés
 
-include 'includes/header.php';
+include '../../includes/header.php';
 
 // 1) Sécurité : vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ../Compte/login.php');
     exit;
 }
 
@@ -35,7 +35,7 @@ if (!$isAdmin) {
         </section>
     </main>
     <?php
-    include 'includes/footer.php';
+    include '../../includes/footer.php';
     exit;
 }
 
@@ -180,4 +180,4 @@ $pendingGamesResult = $conn->query($sql);
     </section>
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../../includes/footer.php'; ?>

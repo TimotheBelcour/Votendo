@@ -1,5 +1,5 @@
 <?php
-include 'includes/header.php';
+include '../../includes/header.php';
 
 $errors = [];
 $success = false;
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <p class="login-hint">
-            En vous inscrivant, vous acceptez nos <a href="mentionsLegales.php">conditions de participation</a>.
+            En vous inscrivant, vous acceptez nos <a href="../mentionsLegales.php">conditions de participation</a>.
           </p>
 
           <p class="login-hint">
@@ -199,4 +199,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../../includes/footer.php'; ?>

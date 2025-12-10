@@ -1,4 +1,4 @@
-<?php include 'includes/header.php'; ?>
+<?php include '../includes/header.php'; ?>
 
 <?php
 // Récupérer tous les jeux validés
@@ -72,4 +72,4 @@ $result = $conn->query($sql);
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include 'includes/header.php';
+include '../../includes/header.php';
 
 $errors  = [];
 $success = false;
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_name'] = $user['nomUtilisateur'];
             $_SESSION['user_email'] = $email;
             // Redirection après 2 secondes
-            header("refresh:2;url=index.php");
+            header("refresh:2;url=../index.php");
         } else {
             // Mot de passe incorrect
             $errors['general'] = 'Email ou mot de passe incorrect.';
@@ -122,4 +122,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../../includes/footer.php'; ?>

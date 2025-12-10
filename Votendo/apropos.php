@@ -2,7 +2,7 @@
 // apropos.php : page de présentation du projet Votendo
 ?>
 
-<?php include 'includes/header.php'; ?>
+<?php include '../includes/header.php'; ?>
 
 <main class="page page--contact"><!-- on réutilise les marges de la page contact -->
 
@@ -86,4 +86,4 @@
   </div>
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

@@ -3,7 +3,7 @@
 // Plus tard : récupérer l'id dans l'URL et charger le jeu depuis la BDD
 // $id = $_GET['id'] ?? null;
 
-include 'includes/header.php'
+include '../includes/header.php'
 ?>
 
 <main class="page page--game">
@@ -22,7 +22,7 @@ include 'includes/header.php'
         <div class="game-detail__media">
           <div class="game-detail__image-wrapper">
             <img
-              src="assets/img/jeux/mario-kart-8-deluxe.jpg"
+              src="../assets/img/jeux/mario-kart-8-deluxe.jpg"
               alt="Jaquette du jeu Mario Kart 8 Deluxe"
               class="game-detail__image"
             >
@@ -80,5 +80,5 @@ include 'includes/header.php'
 </main>
 
 <?php
-include 'includes/footer.php';
+include '../includes/footer.php';
 ?>

@@ -1,9 +1,9 @@
 <?php
-include 'includes/header.php';
+include '../includes/header.php';
 
 // Rediriger si non connecté
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: Compte/login.php');
     exit;
 }
 
@@ -216,4 +216,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </section>
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

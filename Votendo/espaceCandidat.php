@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-include 'includes/header.php'; // -> doit créer $conn (mysqli) et le HTML du header
+include '../includes/header.php';
 
 // Initialisation des variables
 $errors = [];
@@ -186,4 +186,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
     </section>
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

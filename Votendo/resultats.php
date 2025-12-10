@@ -34,7 +34,7 @@ foreach ($games as $game) {
 }
 ?>
 
-<?php include 'includes/header.php'; ?>
+<?php include '../includes/header.php'; ?>
 
 <main class="page page--results">
 
@@ -105,4 +105,4 @@ foreach ($games as $game) {
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>
