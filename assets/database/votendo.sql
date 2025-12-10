@@ -269,7 +269,7 @@ ALTER TABLE `nominations`
 -- Contraintes pour la table `votants`
 --
 ALTER TABLE `votants`
-  ADD CONSTRAINT `votants_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENsCES `utilisateur` (`idutilisateur`);
+  ADD CONSTRAINT `votants_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idutilisateur`);
 
 --
 -- Contraintes pour la table `votes`
