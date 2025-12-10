@@ -11,26 +11,22 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 // Vérifier si admin
-$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$res = $stmt->get_result();
 
-if ($res->num_rows === 0) {
+$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
+$stmt->execute([$userId]);
+$res = $stmt->fetch();
+if (!$res) {
     echo "Accès interdit.";
     exit;
 }
 
-$stmt->close();
-
 // Récupérer l'id du jeu
 $idJeu = $_GET['id'] ?? 0;
 
+
 // Mettre isValide = 1
 $stmt = $conn->prepare("UPDATE jeux SET isValide = 1 WHERE idJeu = ?");
-$stmt->bind_param("i", $idJeu);
-$stmt->execute();
-$stmt->close();
+$stmt->execute([$idJeu]);
 
 header("Location: espaceAdmin.php");
 exit;

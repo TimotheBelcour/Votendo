@@ -21,12 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Rechercher l'utilisateur par email
     $stmt = $conn->prepare("SELECT idutilisateur, nomUtilisateur, passwordHash FROM utilisateur WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    if ($user) {
 
         // Vérifier le mot de passe avec password_verify
         if (password_verify($password, $user['passwordHash'])) {
@@ -46,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Email non trouvé
         $errors['general'] = 'Email ou mot de passe incorrect.';
     }
-
-    $stmt->close();
 }
 ?>
 

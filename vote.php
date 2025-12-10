@@ -30,8 +30,8 @@ $result = $conn->query($sql);
       </header>
 
         <div class="game-list__grid">
-            <?php if ($result && $result->num_rows > 0): ?>
-                <?php while ($jeu = $result->fetch_assoc()): ?>
+            <?php if ($result && $result->rowCount() > 0): ?>
+              <?php while ($jeu = $result->fetch()): ?>
                     <article class="game-card">
                         <div class="game-card__image-wrapper">
                             <img

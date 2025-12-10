@@ -15,14 +15,12 @@ $idUtilisateur = (int) $_SESSION['user_id'];
 $isAdmin = false;
 
 $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->bind_param("i", $idUtilisateur);
-$stmt->execute();
-$adminResult = $stmt->get_result();
+$stmt->execute([$idUtilisateur]);
+$adminResult = $stmt->fetch();
 
-if ($adminResult && $adminResult->num_rows > 0) {
+if ($adminResult) {
     $isAdmin = true;
 }
-$stmt->close();
 
 if (!$isAdmin) {
     // On bloque l'accès si ce n'est pas un admin
@@ -51,24 +49,20 @@ if (isset($_GET['action'], $_GET['idJeu'])) {
 
     if ($action === 'valider') {
         $stmt = $conn->prepare("UPDATE jeux SET isValide = 1 WHERE idJeu = ?");
-        $stmt->bind_param("i", $idJeu);
-        if ($stmt->execute()) {
+        if ($stmt->execute([$idJeu])) {
             $successMessage = "Le jeu #{$idJeu} a été validé.";
         } else {
             $errorMessage = "Erreur lors de la validation du jeu.";
         }
-        $stmt->close();
     } elseif ($action === 'refuser') {
         // Ici on supprime complètement le jeu refusé.
         // Si tu veux plus tard un état "refusé", il faudra ajouter un statut dans la BDD.
         $stmt = $conn->prepare("DELETE FROM jeux WHERE idJeu = ?");
-        $stmt->bind_param("i", $idJeu);
-        if ($stmt->execute()) {
+        if ($stmt->execute([$idJeu])) {
             $successMessage = "Le jeu #{$idJeu} a été supprimé (refusé).";
         } else {
             $errorMessage = "Erreur lors de la suppression du jeu.";
         }
-        $stmt->close();
     }
 }
 
@@ -118,7 +112,7 @@ $pendingGamesResult = $conn->query($sql);
                 </div>
             <?php endif; ?>
 
-            <?php if ($pendingGamesResult && $pendingGamesResult->num_rows > 0): ?>
+            <?php if ($pendingGamesResult && $pendingGamesResult->rowCount() > 0): ?>
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
                         <thead>
@@ -134,7 +128,7 @@ $pendingGamesResult = $conn->query($sql);
                         </tr>
                         </thead>
                         <tbody>
-                        <?php while ($game = $pendingGamesResult->fetch_assoc()): ?>
+                        <?php while ($game = $pendingGamesResult->fetch()): ?>
                             <tr>
                                 <td><?= (int) $game['idJeu'] ?></td>
                                 <td><?= htmlspecialchars($game['titre'], ENT_QUOTES, 'UTF-8') ?></td>

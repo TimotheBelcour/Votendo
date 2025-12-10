@@ -17,45 +17,34 @@ $isAdmin    = false; // Initialiser la variable isAdmin
 if ($isLoggedIn) {
   // Préparer la requête pour vérifier si l'utilisateur est administrateur
   $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-    // Lier le paramètre
-    $stmt->bind_param("i", $userId);
-    // Exécuter la requête
-    $stmt->execute();
-    // Récupérer le résultat de la requête
-    $adminResult = $stmt->get_result();
-    // Si on trouve une ligne, c'est un admin
-    if ($adminResult && $adminResult->num_rows > 0) {
-        $isAdmin = true;
-    }
-    $stmt->close();
+  $stmt->execute([$userId]);
+  $adminResult = $stmt->fetch();
+  if ($adminResult) {
+    $isAdmin = true;
+  }
 }
 
 // Fonction pour déterminer le type d'utilisateur et la page de redirection
 $userPageUrl = '';
 if ($isLoggedIn) {
-    // Vérifier si c'est un administrateur
-    $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $adminResult = $stmt->get_result();
-    
-    if ($adminResult->num_rows > 0) {
-        $userPageUrl = 'espaceAdmin.php';
+  // Vérifier si c'est un administrateur
+  $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
+  $stmt->execute([$userId]);
+  $adminResult = $stmt->fetch();
+  if ($adminResult) {
+    $userPageUrl = 'espaceAdmin.php';
+  } else {
+    // Vérifier si c'est un candidat
+    $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
+    $stmt->execute([$userId]);
+    $candidatResult = $stmt->fetch();
+    if ($candidatResult) {
+      $userPageUrl = 'espaceCandidat.php';
     } else {
-        // Vérifier si c'est un candidat
-        $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $candidatResult = $stmt->get_result();
-        
-        if ($candidatResult->num_rows > 0) {
-            $userPageUrl = 'espaceCandidat.php';
-        } else {
-            // C'est un membre normal
-            $userPageUrl = 'espaceMembre.php';
-        }
+      // C'est un membre normal
+      $userPageUrl = 'espaceMembre.php';
     }
-    $stmt->close();
+  }
 }
 ?>
 <!DOCTYPE html>

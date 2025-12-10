@@ -11,13 +11,15 @@ $password = '';            // Mot de passe MySQL (à adapter selon votre machine
 $database = 'votendo';     // Nom de la base de données
 $port     = 3306;          // Port MySQL
 
-// Connexion MySQL
-$conn = new mysqli($host, $user, $password, $database, $port);
-
-// Vérification d'erreur
-if ($conn->connect_error) {
-    die("Erreur connexion MySQL : " . $conn->connect_error);
+// Connexion PDO
+try {
+    $dsn = "mysql:host=$host;port=$port;dbname=$database;charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
+    $conn = new PDO($dsn, $user, $password, $options);
+} catch (PDOException $e) {
+    die("Erreur connexion MySQL : " . $e->getMessage());
 }
-
-// Définir le charset pour éviter les bugs d'accents
-$conn->set_charset("utf8mb4");
