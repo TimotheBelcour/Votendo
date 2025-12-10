@@ -32,10 +32,16 @@ $result = $conn->query($sql);
         <div class="game-list__grid">
             <?php if ($result && $result->rowCount() > 0): ?>
               <?php while ($jeu = $result->fetch()): ?>
+                <?php
+                  $imageSrc = $jeu['imagePath'] ?? '';
+                  if ($imageSrc && !preg_match('#^https?://#', $imageSrc)) {
+                    $imageSrc = '../' . ltrim($imageSrc, '/');
+                  }
+                ?>
                     <article class="game-card">
                         <div class="game-card__image-wrapper">
                             <img
-                                src="<?php echo htmlspecialchars($jeu['imagePath']); ?>"
+                                src="<?php echo htmlspecialchars($imageSrc); ?>"
                                 alt="<?php echo htmlspecialchars($jeu['titre']); ?>"
                                 class="game-card__image"
                             >

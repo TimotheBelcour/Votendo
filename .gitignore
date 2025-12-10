@@ -1,2 +1,4 @@
 # Fichier de configuration MySQL (ne jamais versionner)
 includes/config.php
+# Fichiers système générés par macOS 
+.DS_Store
