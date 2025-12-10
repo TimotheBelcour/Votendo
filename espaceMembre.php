@@ -13,11 +13,8 @@ $success = false;
 
 // Récupérer les données actuelles de l'utilisateur
 $stmt = $conn->prepare("SELECT nomUtilisateur, email, passwordHash FROM utilisateur WHERE idutilisateur = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-$currentUser = $result->fetch_assoc();
-$stmt->close();
+$stmt->execute([$userId]);
+$currentUser = $stmt->fetch();
 
 // Valeurs initiales
 $nomUtilisateur = $currentUser['nomUtilisateur'] ?? '';
@@ -42,13 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Vérifier unicité si modifié
         if ($nomUtilisateurPost !== $nomUtilisateur) {
             $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE nomUtilisateur = ? AND idutilisateur != ?");
-            $stmt->bind_param("si", $nomUtilisateurPost, $userId);
-            $stmt->execute();
-            $r = $stmt->get_result();
-            if ($r && $r->num_rows > 0) {
+            $stmt->execute([$nomUtilisateurPost, $userId]);
+            $r = $stmt->fetch();
+            if ($r) {
                 $errors['nomUtilisateur'] = "Ce nom d'utilisateur est déjà utilisé.";
             }
-            $stmt->close();
         }
     }
 
@@ -63,13 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Vérifier unicité si modifié
         if ($emailPost !== $email) {
             $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE email = ? AND idutilisateur != ?");
-            $stmt->bind_param("si", $emailPost, $userId);
-            $stmt->execute();
-            $r = $stmt->get_result();
-            if ($r && $r->num_rows > 0) {
+            $stmt->execute([$emailPost, $userId]);
+            $r = $stmt->fetch();
+            if ($r) {
                 $errors['email'] = "Cette adresse e-mail est déjà utilisée.";
             }
-            $stmt->close();
         }
     }
 
@@ -106,33 +99,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($nomUtilisateurPost !== $nomUtilisateur) {
             $stmt = $conn->prepare("UPDATE utilisateur SET nomUtilisateur = ? WHERE idutilisateur = ?");
-            $stmt->bind_param("si", $nomUtilisateurPost, $userId);
-            if ($stmt->execute()) {
+            if ($stmt->execute([$nomUtilisateurPost, $userId])) {
                 $updates++;
                 $_SESSION['user_name'] = $nomUtilisateurPost; // Mettre à jour la session
                 $nomUtilisateur = $nomUtilisateurPost;
             }
-            $stmt->close();
         }
 
         if ($emailPost !== $email) {
             $stmt = $conn->prepare("UPDATE utilisateur SET email = ? WHERE idutilisateur = ?");
-            $stmt->bind_param("si", $emailPost, $userId);
-            if ($stmt->execute()) {
+            if ($stmt->execute([$emailPost, $userId])) {
                 $updates++;
                 $email = $emailPost;
             }
-            $stmt->close();
         }
 
         if ($passwordWillChange) {
             $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("UPDATE utilisateur SET passwordHash = ? WHERE idutilisateur = ?");
-            $stmt->bind_param("si", $passwordHash, $userId);
-            if ($stmt->execute()) {
+            if ($stmt->execute([$passwordHash, $userId])) {
                 $updates++;
             }
-            $stmt->close();
         }
 
         if ($updates > 0) {

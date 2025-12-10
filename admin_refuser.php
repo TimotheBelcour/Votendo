@@ -10,26 +10,22 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$res = $stmt->get_result();
 
-if ($res->num_rows === 0) {
+$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
+$stmt->execute([$userId]);
+$res = $stmt->fetch();
+if (!$res) {
     echo "Accès interdit.";
     exit;
 }
 
-$stmt->close();
-
 // Récupérer id du jeu
 $idJeu = $_GET['id'] ?? 0;
 
+
 // Suppression
 $stmt = $conn->prepare("DELETE FROM jeux WHERE idJeu = ?");
-$stmt->bind_param("i", $idJeu);
-$stmt->execute();
-$stmt->close();
+$stmt->execute([$idJeu]);
 
 header("Location: espaceAdmin.php");
 exit;

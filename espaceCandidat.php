@@ -23,19 +23,15 @@ $idUtilisateur = $_SESSION['user_id'];
 
 // 1) Récupérer l'id du candidat correspondant à cet utilisateur
 $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
-$stmt->bind_param("i", $idUtilisateur);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt->execute([$idUtilisateur]);
+$row = $stmt->fetch();
 
-if ($result->num_rows !== 1) {
+if (!$row) {
     // L'utilisateur n'est pas déclaré comme candidat
     $errors['general'] = "Votre compte n'est pas associé à un profil candidat. Contactez l'administrateur.";
 } else {
-    $row = $result->fetch_assoc();
     $idCandidat = (int) $row['idCandidats'];
 }
-
-$stmt->close();
 
 // 2) Traitement du formulaire si on a un POST et si on a bien un idCandidat
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
@@ -65,20 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
         ");
 
-        // s = string, i = integer
-        $stmt->bind_param(
-            "sssissss",
-            $titre,
-            $studio,
-            $dateSortie,
-            $idCandidat,
-            $imagePath,
-            $videoUrl,
-            $resume,
-            $description
-        );
-
-        if ($stmt->execute()) {
+        if ($stmt->execute([$titre, $studio, $dateSortie, $idCandidat, $imagePath, $videoUrl, $resume, $description])) {
             $success = true;
 
             // Réinitialiser les champs du formulaire
@@ -86,8 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
         } else {
             $errors['general'] = "Erreur lors de l'enregistrement du jeu. Réessayez plus tard.";
         }
-
-        $stmt->close();
     }
 }
 ?>

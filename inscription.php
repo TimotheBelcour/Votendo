@@ -49,21 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         // Vérifier si le nom d'utilisateur existe déjà
         $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE nomUtilisateur = ?");
-        $stmt->bind_param("s", $nomUtilisateur);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->execute([$nomUtilisateur]);
+        $result = $stmt->fetch();
 
-        if ($result->num_rows > 0) {
+        if ($result) {
             $errors['nomUtilisateur'] = "Ce nom d'utilisateur est déjà utilisé.";
         }
 
         // Vérifier si l'e-mail existe déjà
         $stmt = $conn->prepare("SELECT idutilisateur FROM utilisateur WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->execute([$email]);
+        $result = $stmt->fetch();
 
-        if ($result->num_rows > 0) {
+        if ($result) {
             $errors['email'] = "Cette adresse e-mail est déjà utilisée.";
         }
 
@@ -73,9 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insérer le nouvel utilisateur
             $stmt = $conn->prepare("INSERT INTO utilisateur (nomUtilisateur, email, passwordHash) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $nomUtilisateur, $email, $passwordHash);
 
-            if ($stmt->execute()) {
+            if ($stmt->execute([$nomUtilisateur, $email, $passwordHash])) {
                 $success = true;
                 $nomUtilisateur = '';
                 $email = '';
@@ -85,8 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors['general'] = "Erreur lors de l'inscription. Veuillez réessayer.";
             }
         }
-
-        $stmt->close();
         }
 }
 ?>
