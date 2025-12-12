@@ -95,7 +95,10 @@ $pendingGamesResult = $conn->query($sql);
             <p class="hero__subtitle">
                 Validez ou refusez les jeux soumis par les studios / candidats avant leur publication.
             </p>
-            <a href="creerCategorie.php" class="btn btn--primary">Créer une nouvelle catégorie</a>
+            <div style="margin-top: 1rem;">
+                <a href="creerCategorie.php" class="btn btn--primary" style="margin-right: 1rem;">Créer une nouvelle catégorie</a>
+                <a href="creerNomination.php" class="btn btn--primary">Créer une nouvelle nomination</a>
+            </div>
         </div>
     </section>
 
