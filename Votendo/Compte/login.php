@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include '../../includes/header.php';
+include '../../includes/config.php';
 
 $errors  = [];
 $success = false;
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     // Rechercher l'utilisateur par email
-    $stmt = $conn->prepare("SELECT idutilisateur, nomUtilisateur, passwordHash FROM utilisateur WHERE email = ?");
+    $stmt = $conn->prepare("SELECT idutilisateur, nomUtilisateur, passwordHash, firstLogin FROM utilisateur WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -34,8 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['idutilisateur'];
             $_SESSION['user_name'] = $user['nomUtilisateur'];
             $_SESSION['user_email'] = $email;
-            // Redirection après 2 secondes
-            header("refresh:2;url=../index.php");
+            // Vérifier si première connexion
+            if ($user['firstLogin'] == 1) {
+                // Rediriger vers changement de mot de passe
+                header("Location: changePassword.php");
+                exit;
+            } else {
+                // Redirection après 2 secondes
+                header("refresh:2;url=../index.php");
+            }
         } else {
             // Mot de passe incorrect
             $errors['general'] = 'Email ou mot de passe incorrect.';
@@ -45,6 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['general'] = 'Email ou mot de passe incorrect.';
     }
 }
+
+include '../../includes/header.php';
 ?>
 
 <main class="page page--login">

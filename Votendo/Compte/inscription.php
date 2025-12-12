@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
             // Insérer le nouvel utilisateur
-            $stmt = $conn->prepare("INSERT INTO utilisateur (nomUtilisateur, email, passwordHash) VALUES (?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO utilisateur (nomUtilisateur, email, passwordHash, firstLogin) VALUES (?, ?, ?, 0)");
 
             if ($stmt->execute([$nomUtilisateur, $email, $passwordHash])) {
                 // Récupérer l'id de l'utilisateur inséré
