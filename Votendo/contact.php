@@ -1,24 +1,25 @@
 <?php
 // contact.php : page de contact avec traitement du formulaire
+include '../includes/config.php';
 // Initialisation des variables
 $errors  = [];
 $success = false;
 
 $name    = '';
 $email   = '';
-$message = '';
+$description = '';
 
 // Si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupération + nettoyage des données
     $name    = trim($_POST['name'] ?? '');
     $email   = trim($_POST['email'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+    $description = trim($_POST['description'] ?? '');
 
     // Validation : Nom
     if ($name === '') {
         $errors['name'] = 'Merci d’indiquer votre nom.';
-    } elseif (mb_strlen($name) > 100) {
+    } elseif (strlen($name) > 100) {
         $errors['name'] = 'Le nom est trop long (100 caractères max).';
     }
 
@@ -29,22 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = 'L’adresse e-mail n’est pas valide.';
     }
 
-    // Validation : Message
-    if ($message === '') {
-        $errors['message'] = 'Merci d’écrire un petit message.';
-    } elseif (mb_strlen($message) < 10) {
-        $errors['message'] = 'Le message est trop court (10 caractères minimum).';
+    // Validation : Description
+    if ($description === '') {
+        $errors['description'] = 'Merci de décrire votre demande.';
+    } elseif (strlen($description) < 10) {
+        $errors['description'] = 'La description est trop courte (10 caractères minimum).';
     }
 
     // Si tout est OK
     if (empty($errors)) {
-        // Ici on pourra envoyer les e-mails ou stockage en BDD
-        $success = true;
-
-        // On vide les champs après envoi
-        $name = '';
-        $email = '';
-        $message = '';
+        // Insérer dans la table demandes_candidature
+        $stmt = $conn->prepare("INSERT INTO demandes_candidature (nom, email, description) VALUES (?, ?, ?)");
+        if ($stmt->execute([$name, $email, $description])) {
+            $success = true;
+            // On vide les champs après envoi
+            $name = '';
+            $email = '';
+            $description = '';
+        } else {
+            $errors['general'] = 'Erreur lors de la soumission. Veuillez réessayer.';
+        }
     }
 }
 ?>
@@ -55,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Hero / introduction -->
     <section class="hero hero--small">
         <div class="container hero__content">
-            <p class="hero__eyebrow">Contact</p>
-            <h1 class="hero__title">Une question sur Votendo&nbsp;?</h1>
+            <p class="hero__eyebrow">Candidature</p>
+            <h1 class="hero__title">Soumettre une candidature</h1>
             <p class="hero__subtitle">
-                Utilise ce formulaire pour nous contacter à propos du site,
-                du fonctionnement du vote ou d’un problème technique.
+                Soumets ta candidature pour proposer un jeu sur Votendo.
+                Décris ton studio, ton jeu et pourquoi il mérite d'être nominé.
             </p>
         </div>
     </section>
@@ -125,18 +130,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Message -->
-                <div class="form__field form__field--full <?= isset($errors['message']) ? 'form__field--error' : '' ?>">
-                    <label for="message">Message</label>
+                <!-- Description -->
+                <div class="form__field form__field--full <?= isset($errors['description']) ? 'form__field--error' : '' ?>">
+                    <label for="description">Description de la demande</label>
                     <textarea
-                        id="message"
-                        name="message"
+                        id="description"
+                        name="description"
                         rows="5"
-                        placeholder="Explique ta demande en quelques phrases…"
+                        placeholder="Décris ton studio, ton jeu et pourquoi il mérite d'être nominé…"
                         required
-                    ><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></textarea>
-                    <?php if (isset($errors['message'])): ?>
-                        <p class="form__error"><?= htmlspecialchars($errors['message'], ENT_QUOTES, 'UTF-8') ?></p>
+                    ><?= htmlspecialchars($description, ENT_QUOTES, 'UTF-8') ?></textarea>
+                    <?php if (isset($errors['description'])): ?>
+                        <p class="form__error"><?= htmlspecialchars($errors['description'], ENT_QUOTES, 'UTF-8') ?></p>
                     <?php endif; ?>
                 </div>
 

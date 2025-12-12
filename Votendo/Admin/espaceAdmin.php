@@ -97,7 +97,8 @@ $pendingGamesResult = $conn->query($sql);
             </p>
             <div style="margin-top: 1rem;">
                 <a href="creerCategorie.php" class="btn btn--primary" style="margin-right: 1rem;">Créer une nouvelle catégorie</a>
-                <a href="creerNomination.php" class="btn btn--primary">Créer une nouvelle nomination</a>
+                <a href="creerNomination.php" class="btn btn--primary" style="margin-right: 1rem;">Créer une nouvelle nomination</a>
+                <a href="validerCandidature.php" class="btn btn--primary">Valider les candidatures</a>
             </div>
         </div>
     </section>

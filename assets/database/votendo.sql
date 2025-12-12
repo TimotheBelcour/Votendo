@@ -95,7 +95,8 @@ CREATE TABLE `utilisateur` (
   `idutilisateur` int(11) NOT NULL,
   `nomUtilisateur` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
-  `passwordHash` varchar(255) NOT NULL
+  `passwordHash` varchar(255) NOT NULL,
+  `firstLogin` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -108,6 +109,20 @@ CREATE TABLE `votants` (
   `idVotants` int(11) NOT NULL,
   `idUtilisateur` int(11) NOT NULL,
   `tokenVotants` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `demandes_candidature`
+--
+
+CREATE TABLE `demandes_candidature` (
+  `idDemande` int(11) NOT NULL,
+  `nom` varchar(100) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `description` text NOT NULL,
+  `dateSoumission` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -185,6 +200,12 @@ ALTER TABLE `votes`
   ADD KEY `tokenVotants` (`tokenVotants`);
 
 --
+-- Index pour la table `demandes_candidature`
+--
+ALTER TABLE `demandes_candidature`
+  ADD PRIMARY KEY (`idDemande`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
@@ -217,6 +238,12 @@ ALTER TABLE `jeux`
 --
 ALTER TABLE `nominations`
   MODIFY `idNominations` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `demandes_candidature`
+--
+ALTER TABLE `demandes_candidature`
+  MODIFY `idDemande` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
@@ -277,6 +304,9 @@ ALTER TABLE `votants`
 ALTER TABLE `votes`
   ADD CONSTRAINT `votes_ibfk_1` FOREIGN KEY (`tokenVotants`) REFERENCES `votants` (`tokenVotants`);
 COMMIT;
+
+-- Ajouter la colonne firstLogin si elle n'existe pas
+ALTER TABLE utilisateur ADD COLUMN firstLogin TINYINT(1) NOT NULL DEFAULT 1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
