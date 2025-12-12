@@ -73,6 +73,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("INSERT INTO utilisateur (nomUtilisateur, email, passwordHash) VALUES (?, ?, ?)");
 
             if ($stmt->execute([$nomUtilisateur, $email, $passwordHash])) {
+                // Récupérer l'id de l'utilisateur inséré
+                $idUtilisateur = $conn->lastInsertId();
+
+                // Générer un token de votant de 45 caractères max
+                $tokenVotants = substr(bin2hex(random_bytes(23)), 0, 45);
+
+                // Insérer dans la table votants
+                $stmtVotants = $conn->prepare("INSERT INTO votants (idUtilisateur, tokenVotants) VALUES (?, ?)");
+                $stmtVotants->execute([$idUtilisateur, $tokenVotants]);
+
                 $success = true;
                 $nomUtilisateur = '';
                 $email = '';
