@@ -1,11 +1,14 @@
 <?php
-include '../includes/header.php';
+// espaceMembre.php : page de gestion du profil utilisateur pour les membres connectés
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 
-// Rediriger si non connecté
-if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-    header('Location: Compte/login.php');
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'membre') {
+    header('Location: accesRefuse.php');
     exit;
 }
+include '../includes/header.php';
 
 $userId = (int) ($_SESSION['user_id']);
 $errors = [];

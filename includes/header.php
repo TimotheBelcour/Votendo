@@ -37,27 +37,19 @@ if ($isLoggedIn) {
   }
 }
 
-// Fonction pour déterminer le type d'utilisateur et la page de redirection
-$userPageUrl = '';
+// Déterminer la page "espace" en fonction du rôle (sans requêtes SQL)
+$userPageUrl = $basePath . 'Votendo/espaceMembre.php';
+
 if ($isLoggedIn) {
-  // Vérifier si c'est un administrateur
-  $stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-  $stmt->execute([$userId]);
-  $adminResult = $stmt->fetch();
-  if ($adminResult) {
-    $userPageUrl = $basePath . 'Votendo/Admin/espaceAdmin.php';
-  } else {
-    // Vérifier si c'est un candidat
-    $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
-    $stmt->execute([$userId]);
-    $candidatResult = $stmt->fetch();
-    if ($candidatResult) {
-      $userPageUrl = $basePath . 'Votendo/espaceCandidat.php';
+    $role = $_SESSION['role'] ?? 'membre';
+
+    if ($role === 'admin') {
+        $userPageUrl = $basePath . 'Votendo/Admin/espaceAdmin.php';
+    } elseif ($role === 'candidat') {
+        $userPageUrl = $basePath . 'Votendo/espaceCandidat.php';
     } else {
-      // C'est un membre normal
-      $userPageUrl = $basePath . 'Votendo/espaceMembre.php';
+        $userPageUrl = $basePath . 'Votendo/espaceMembre.php';
     }
-  }
 }
 ?>
 <!DOCTYPE html>

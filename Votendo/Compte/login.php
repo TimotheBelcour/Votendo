@@ -45,8 +45,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $stmtInsert->execute([$user['idutilisateur'], $token]);
             }
+            // Stocker le token en session
             $_SESSION['tokenVotants'] = $token;
             session_regenerate_id(true);
+            // Déterminer le rôle de l'utilisateur (sans table roles)
+            $role = 'membre';
+
+            // Admin ?
+            $stmt = $conn->prepare("SELECT 1 FROM administrateur WHERE idUtilisateur = ? LIMIT 1");
+            $stmt->execute([$_SESSION['user_id']]);
+            if ($stmt->fetchColumn()) {
+                $role = 'admin';
+            } else {
+                // Candidat ?
+                $stmt = $conn->prepare("SELECT 1 FROM candidats WHERE idUtilisateur = ? LIMIT 1");
+                $stmt->execute([$_SESSION['user_id']]);
+                if ($stmt->fetchColumn()) {
+                    $role = 'candidat';
+                }
+            }
+
+            $_SESSION['role'] = $role;
+
             // Vérifier si première connexion
             if ($user['firstLogin'] == 1) {
                 // Rediriger vers changement de mot de passe

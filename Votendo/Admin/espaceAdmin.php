@@ -1,13 +1,15 @@
 <?php
 // espaceAdmin.php : espace d'administration pour valider les jeux proposés
 
-include '../../includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// 1) Sécurité : vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../Compte/login.php');
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../accesRefuse.php');
     exit;
 }
+include '../../includes/header.php';
 
 $idUtilisateur = (int) $_SESSION['user_id'];
 
