@@ -1,3 +1,48 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include '../includes/config.php';
+
+$successMsg = '';
+$errorMsg = '';
+
+// Accès réservé aux connectés
+if (!isset($_SESSION['tokenVotants'])) {
+    header('Location: Compte/login.php');
+    exit;
+}
+
+// Traitement du vote
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idJeu'])) {
+    $idJeu = (int)$_POST['idJeu'];
+    $token = $_SESSION['tokenVotants'];
+
+    try {
+        // Vérifier que le jeu est valide
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM jeux WHERE idJeu = ? AND isValide = 1");
+        $stmt->execute([$idJeu]);
+
+        if ((int)$stmt->fetchColumn() === 0) {
+            $errorMsg = "Jeu invalide.";
+        } else {
+            // Insert : si l'utilisateur a déjà voté, ça déclenche l'unicité
+            $stmt = $conn->prepare("INSERT INTO votes (tokenVotants, idJeu, `timestamp`) VALUES (?, ?, CURDATE())");
+            $stmt->execute([$token, $idJeu]);
+
+            $successMsg = "Vote enregistré ! Merci.";
+        }
+    } catch (PDOException $e) {
+        // 1062 = duplicate entry (déjà voté)
+        if (isset($e->errorInfo[1]) && (int)$e->errorInfo[1] === 1062) {
+            $errorMsg = "Tu as déjà voté pour cette édition.";
+        } else {
+            $errorMsg = "Erreur lors de l'enregistrement du vote.";
+        }
+    }
+}
+?>
+
 <?php include '../includes/header.php'; ?>
 
 <?php
@@ -20,6 +65,14 @@ $result = $conn->query($sql);
       </p>
     </div>
   </section>
+  <!-- Messages de succès ou d'erreur -->
+  <?php if (!empty($successMsg)): ?>
+    <div class="alert alert--success"><?php echo htmlspecialchars($successMsg); ?></div>
+  <?php endif; ?>
+
+  <?php if (!empty($errorMsg)): ?>
+    <div class="alert alert--error"><?php echo htmlspecialchars($errorMsg); ?></div>
+  <?php endif; ?>
 
   <!-- Liste des jeux -->
   <section class="game-list">
@@ -62,10 +115,13 @@ $result = $conn->query($sql);
                             <p class="game-card__description">
                                 <?php echo htmlspecialchars($jeu['resume']); ?>
                             </p>
-
-                            <button class="btn btn--primary game-card__button" type="button">
+                            <!-- Bouton de vote -->
+                            <form method="POST" action="vote.php">
+                              <input type="hidden" name="idJeu" value="<?php echo (int)$jeu['idJeu']; ?>">
+                              <button class="btn btn--primary game-card__button" type="submit">
                                 Voter pour ce jeu
-                            </button>
+                              </button>
+                            </form>
                         </div>
                     </article>
                 <?php endwhile; ?>

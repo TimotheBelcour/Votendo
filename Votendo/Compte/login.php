@@ -34,6 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['idutilisateur'];
             $_SESSION['user_name'] = $user['nomUtilisateur'];
             $_SESSION['user_email'] = $email;
+            // Gestion du token votant
+            $stmtToken = $conn->prepare("SELECT tokenVotants FROM votants WHERE idUtilisateur = ?");
+            $stmtToken->execute([$user['idutilisateur']]);
+            $token = $stmtToken->fetchColumn();
+            if (!$token) {
+                $token = bin2hex(random_bytes(32));
+                $stmtInsert = $conn->prepare(
+                    "INSERT INTO votants (idUtilisateur, tokenVotants) VALUES (?, ?)"
+                );
+                $stmtInsert->execute([$user['idutilisateur'], $token]);
+            }
+            $_SESSION['tokenVotants'] = $token;
+            session_regenerate_id(true);
             // Vérifier si première connexion
             if ($user['firstLogin'] == 1) {
                 // Rediriger vers changement de mot de passe
