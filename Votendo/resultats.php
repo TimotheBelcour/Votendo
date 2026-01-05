@@ -1,35 +1,38 @@
 <?php
-// resultats.php : page d’affichage des résultats du vote
-// Pour l’instant les données sont en dur dans le code.
-// Plus tard, on pourra les récupérer en BDD.
+// resultats.php : page d'affichage des résultats du vote
 
-// Liste des jeux avec un nombre de votes simulé.
-$games = [
-    [
-        'title'   => 'Super Mario Odyssey',
-        'studio'  => 'Nintendo',
-        'votes'   => 120,
-    ],
-    [
-        'title'   => 'Zelda: Tears of the Kingdom',
-        'studio'  => 'Nintendo',
-        'votes'   => 180,
-    ],
-    [
-        'title'   => 'Mario Kart 8 Deluxe',
-        'studio'  => 'Nintendo',
-        'votes'   => 90,
-    ],
-];
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Calcul du total des votes et du nombre de votes maximum (pour le gagnant)
+include '../includes/config.php'; // doit fournir $conn (PDO)
+
+// 1) Récupérer les jeux validés + nombre de votes réels
+$sql = "
+    SELECT 
+        j.idJeu,
+        j.titre AS title,
+        j.studio AS studio,
+        COUNT(v.idVotes) AS votes
+    FROM jeux j
+    LEFT JOIN votes v ON v.idJeu = j.idJeu
+    WHERE j.isValide = 1
+    GROUP BY j.idJeu, j.titre, j.studio
+    ORDER BY votes DESC, j.titre ASC
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// 2) Total des votes + maxVotes (pour l'étoile gagnant)
 $totalVotes = 0;
-$maxVotes   = 0;
+$maxVotes = 0;
 
 foreach ($games as $game) {
-    $totalVotes += $game['votes'];
-    if ($game['votes'] > $maxVotes) {
-        $maxVotes = $game['votes'];
+    $totalVotes += (int)$game['votes'];
+    if ((int)$game['votes'] > $maxVotes) {
+        $maxVotes = (int)$game['votes'];
     }
 }
 ?>
@@ -54,9 +57,7 @@ foreach ($games as $game) {
     <div class="container">
       <h2 class="section__title">Classement de l’édition en cours</h2>
       <p class="section__text">
-        Les pourcentages sont calculés sur le nombre total de votes enregistrés
-        pour cette édition. Cette page reste purement indicative dans le cadre du MVP&nbsp;1
-        (les données ne sont pas encore stockées en base de données).
+        Les résultats sont calculés à partir des votes enregistrés sur Votendo.
       </p>
 
       <!-- Liste des résultats -->
@@ -74,12 +75,12 @@ foreach ($games as $game) {
 
           <li class="results-item <?php if ($isWinner) echo 'results-item--winner'; ?>">
             <div class="results-item__header">
-              <div>
+              <div class="results-item__main">
                 <span class="results-item__title">
                   <?= htmlspecialchars($game['title']) ?>
                 </span>
                 <span class="results-item__studio">
-                  • <?= htmlspecialchars($game['studio']) ?>
+                  <?= htmlspecialchars($game['studio']) ?>
                 </span>
               </div>
               <div class="results-item__votes">

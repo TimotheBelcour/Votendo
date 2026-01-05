@@ -41,6 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idJeu'])) {
         }
     }
 }
+// --- Vérifier si l'utilisateur a déjà voté ---
+$stmt = $conn->prepare("SELECT idJeu FROM votes WHERE tokenVotants = ? LIMIT 1");
+$stmt->execute([$_SESSION['tokenVotants']]);
+$alreadyVotedGameId = $stmt->fetchColumn();
+$hasVoted = ($alreadyVotedGameId !== false);
 ?>
 
 <?php include '../includes/header.php'; ?>
@@ -104,9 +109,13 @@ $result = $conn->query($sql);
                         </div>
 
                         <div class="game-card__body">
-                            <h3 class="game-card__title">
-                                <?php echo htmlspecialchars($jeu['titre']); ?>
-                            </h3>
+                          <h3 class="game-card__title">
+                            <?php echo htmlspecialchars($jeu['titre']); ?>
+                          </h3>
+                          <!-- Indiquer si c'est le jeu pour lequel l'utilisateur a voté -->
+                          <?php if ($hasVoted && (int)$alreadyVotedGameId === (int)$jeu['idJeu']): ?>
+                            <p class="game-card__badge">Ton vote</p>
+                          <?php endif; ?>
 
                             <p class="game-card__meta">
                                 <?php echo htmlspecialchars($jeu['dateSortie']); ?>
@@ -115,12 +124,20 @@ $result = $conn->query($sql);
                             <p class="game-card__description">
                                 <?php echo htmlspecialchars($jeu['resume']); ?>
                             </p>
-                            <!-- Bouton de vote -->
+                            <!-- Formulaire de vote -->
                             <form method="POST" action="vote.php">
-                              <input type="hidden" name="idJeu" value="<?php echo (int)$jeu['idJeu']; ?>">
-                              <button class="btn btn--primary game-card__button" type="submit">
-                                Voter pour ce jeu
-                              </button>
+                              <input type="hidden" name="idJeu" value="<?= (int)$jeu['idJeu'] ?>">
+                              <!-- Désactiver le bouton si l'utilisateur a déjà voté -->
+                              <?php if ($hasVoted): ?>
+                                <button class="btn btn--primary game-card__button" type="button" disabled>
+                                  Déjà voté
+                                </button>
+                              <!-- Sinon, afficher le bouton de vote -->  
+                              <?php else: ?>
+                                <button class="btn btn--primary game-card__button" type="submit">
+                                  Voter pour ce jeu
+                                </button>
+                              <?php endif; ?>
                             </form>
                         </div>
                     </article>
