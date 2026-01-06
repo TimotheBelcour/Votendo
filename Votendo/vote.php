@@ -1,17 +1,13 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-include '../includes/config.php';
-
+// vote.php : page de vote pour les utilisateurs connectés avec un token de votant valide
+require_once __DIR__ . '/../includes/auth.php';
+// connecté + token votant obligatoire
+require_login('Compte/login.php');
+require_session_key('tokenVotants', 'Compte/login.php');
+require_once __DIR__ . '/../includes/header.php';
+// Initialisation des messages
 $successMsg = '';
 $errorMsg = '';
-
-// Accès réservé aux connectés
-if (!isset($_SESSION['tokenVotants'])) {
-    header('Location: Compte/login.php');
-    exit;
-}
 
 // Traitement du vote
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idJeu'])) {
@@ -47,8 +43,6 @@ $stmt->execute([$_SESSION['tokenVotants']]);
 $alreadyVotedGameId = $stmt->fetchColumn();
 $hasVoted = ($alreadyVotedGameId !== false);
 ?>
-
-<?php include '../includes/header.php'; ?>
 
 <?php
 // Récupérer tous les jeux validés
@@ -151,4 +145,4 @@ $result = $conn->query($sql);
 
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

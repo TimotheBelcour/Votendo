@@ -1,11 +1,7 @@
 <?php
 // resultats.php : page d'affichage des résultats du vote
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-include '../includes/config.php'; // doit fournir $conn (PDO)
+require_once __DIR__ . '/../includes/header.php';
 
 // 1) Récupérer les jeux validés + nombre de votes réels
 $sql = "
@@ -36,8 +32,6 @@ foreach ($games as $game) {
     }
 }
 ?>
-
-<?php include '../includes/header.php'; ?>
 
 <main class="page page--results">
 
@@ -106,4 +100,4 @@ foreach ($games as $game) {
 
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

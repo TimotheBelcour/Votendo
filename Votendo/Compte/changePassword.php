@@ -1,19 +1,15 @@
 <?php
 // changePassword.php : page pour changer le mot de passe
-
-include '../../includes/header.php';
-
-// Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
+// Nécessite que l'utilisateur soit connecté
+require_once __DIR__ . '/../../includes/auth.php';
+require_login('login.php');
+require_once __DIR__ . '/../../includes/header.php';
+// Récupérer l'ID utilisateur depuis la session
 $idUtilisateur = (int) $_SESSION['user_id'];
-
+// Initialisation des variables
 $errors = [];
 $success = false;
-
+// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldPassword = $_POST['oldPassword'] ?? '';
     $newPassword = $_POST['newPassword'] ?? '';
@@ -151,4 +147,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </main>
 
-<?php include '../../includes/footer.php'; ?>
+<?php require_once __DIR__. '/../../includes/footer.php'; ?>

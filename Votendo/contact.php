@@ -1,10 +1,10 @@
 <?php
 // contact.php : page de contact avec traitement du formulaire
-include '../includes/config.php';
+require_once __DIR__ . '/../includes/header.php';
 // Initialisation des variables
 $errors  = [];
 $success = false;
-
+// Champs du formulaire
 $name    = '';
 $email   = '';
 $description = '';
@@ -53,8 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-<?php include '../includes/header.php'; ?>
 
 <main class="page page--contact">
     <!-- Hero / introduction -->
@@ -156,4 +154,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </section>
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

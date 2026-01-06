@@ -1,24 +1,15 @@
 <?php
 // proposer_jeu.php : espace candidat pour proposer un jeu
 
-// Démarrer la session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'candidat') {
-    header('Location: accesRefuse.php');
-    exit;
-}
-
-include '../includes/header.php';
-
-// Initialisation des variables
-$errors = [];
-$success = false;
+require_once __DIR__ . '/../includes/auth.php';
+require_role('candidat', 'accesRefuse.php');
+require_once __DIR__ . '/../includes/header.php';
 
 // Récupérer l'idUtilisateur depuis la session
 $idUtilisateur = $_SESSION['user_id'];
+// Initialisation des variables
+$errors = [];
+$success = false;
 
 // 1) Récupérer l'id du candidat correspondant à cet utilisateur
 $stmt = $conn->prepare("SELECT idCandidats FROM candidats WHERE idUtilisateur = ?");
@@ -185,4 +176,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
     </section>
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

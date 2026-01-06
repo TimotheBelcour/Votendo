@@ -1,6 +1,8 @@
 <?php
+// accesRefuse.php : page affichée lorsqu'un utilisateur tente d'accéder à une page sans les droits nécessaires
 http_response_code(403);
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/../includes/auth.php';
+ensure_session_started();
 require_once __DIR__ . '/../includes/header.php';
 ?>
 

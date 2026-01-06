@@ -1,15 +1,10 @@
 <?php
 // espaceMembre.php : page de gestion du profil utilisateur pour les membres connectés
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'membre') {
-    header('Location: accesRefuse.php');
-    exit;
-}
-include '../includes/header.php';
-
+require_once __DIR__ . '/../includes/auth.php';
+require_role('membre', 'accesRefuse.php');
+require_once __DIR__ . '/../includes/header.php';
+// Récupérer l'ID utilisateur depuis la session
 $userId = (int) ($_SESSION['user_id']);
 $errors = [];
 $success = false;
@@ -219,4 +214,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </section>
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

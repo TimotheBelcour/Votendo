@@ -1,47 +1,14 @@
 <?php
 // espaceAdmin.php : espace d'administration pour valider les jeux proposés
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../../includes/auth.php';
+require_role('admin', '../accesRefuse.php');
+require_once __DIR__ . '/../../includes/header.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../accesRefuse.php');
-    exit;
-}
-include '../../includes/header.php';
-
+// 1) Récupérer l'idUtilisateur depuis la session
 $idUtilisateur = (int) $_SESSION['user_id'];
 
-// 2) Vérifier qu'il est administrateur
-$isAdmin = false;
-
-$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->execute([$idUtilisateur]);
-$adminResult = $stmt->fetch();
-
-if ($adminResult) {
-    $isAdmin = true;
-}
-
-if (!$isAdmin) {
-    // On bloque l'accès si ce n'est pas un admin
-    http_response_code(403);
-    ?>
-    <main class="page page--small">
-        <section class="hero hero--small">
-            <div class="container hero__content">
-                <h1 class="hero__title">Accès refusé</h1>
-                <p class="hero__subtitle">Cette page est réservée aux administrateurs.</p>
-            </div>
-        </section>
-    </main>
-    <?php
-    include '../../includes/footer.php';
-    exit;
-}
-
-// 3) Gestion des actions (valider / refuser)
+// 2) Gestion des actions (valider / refuser)
 $successMessage = '';
 $errorMessage   = '';
 
@@ -68,7 +35,7 @@ if (isset($_GET['action'], $_GET['idJeu'])) {
     }
 }
 
-// 4) Récupérer la liste des jeux en attente
+// 3) Récupérer la liste des jeux en attente
 $sql = "
     SELECT 
         j.idJeu,
@@ -187,4 +154,4 @@ $pendingGamesResult = $conn->query($sql);
     </section>
 </main>
 
-<?php include '../../includes/footer.php'; ?>
+<?php require_once __DIR__. '/../../includes/footer.php'; ?>

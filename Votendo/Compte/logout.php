@@ -1,13 +1,10 @@
 <?php
 // logout.php : page de déconnexion
-
-// Démarrer la session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Détruire toutes les variables de session
-$_SESSION = [];
+// Inclure les fichiers nécessaires
+require_once __DIR__ . '/../../includes/auth.php';
+ensure_session_started();
+// Vider toutes les variables de session
+session_unset();
 
 // Détruire le cookie de session
 if (ini_get("session.use_cookies")) {
@@ -29,4 +26,3 @@ session_destroy();
 // Redirection vers l'accueil
 header("Location: ../index.php");
 exit;
-?>

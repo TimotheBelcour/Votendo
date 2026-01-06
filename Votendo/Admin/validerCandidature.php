@@ -1,52 +1,20 @@
 <?php
 // validerCandidature.php : page pour valider les candidatures
-
-include '../../includes/header.php';
-
-// 1) Sécurité : vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../Compte/login.php');
-    exit;
-}
-
+// Nécessite que l'utilisateur soit connecté et soit administrateur
+require_once __DIR__ . '/../../includes/auth.php';
+require_role('admin', '../accesRefuse.php');
+require_once __DIR__ . '/../../includes/header.php';
+// Connexion à la base de données
 $idUtilisateur = (int) $_SESSION['user_id'];
 
-// 2) Vérifier qu'il est administrateur
-$isAdmin = false;
-
-$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->execute([$idUtilisateur]);
-$adminResult = $stmt->fetch();
-
-if ($adminResult) {
-    $isAdmin = true;
-}
-
-if (!$isAdmin) {
-    // On bloque l'accès si ce n'est pas un admin
-    http_response_code(403);
-    ?>
-    <main class="page page--small">
-        <section class="hero hero--small">
-            <div class="container hero__content">
-                <h1 class="hero__title">Accès refusé</h1>
-                <p class="hero__subtitle">Cette page est réservée aux administrateurs.</p>
-            </div>
-        </section>
-    </main>
-    <?php
-    include '../../includes/footer.php';
-    exit;
-}
-
-// 3) Gestion des actions (valider / refuser)
+// 1) Gestion des actions (valider / refuser)
 $successMessage = '';
 $errorMessage   = '';
-
+// Vérifier si une action est demandée
 if (isset($_GET['action'], $_GET['idDemande'])) {
     $action = $_GET['action'];
     $idDemande = (int) $_GET['idDemande'];
-
+    // Valider la candidature
     if ($action === 'valider') {
         // Récupérer la demande
         $stmt = $conn->prepare("SELECT nom, email, description FROM demandes_candidature WHERE idDemande = ?");
@@ -110,7 +78,7 @@ if (isset($_GET['action'], $_GET['idDemande'])) {
     }
 }
 
-// 4) Récupérer les demandes en attente
+// 2) Récupérer les demandes en attente
 $sql = "SELECT idDemande, nom, email, description, dateSoumission FROM demandes_candidature ORDER BY dateSoumission DESC";
 $pendingCandidatures = $conn->query($sql);
 ?>
@@ -206,4 +174,4 @@ $pendingCandidatures = $conn->query($sql);
     </script>
 </main>
 
-<?php include '../../includes/footer.php'; ?>
+<?php require_once __DIR__. '/../../includes/footer.php'; ?>

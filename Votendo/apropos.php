@@ -1,8 +1,7 @@
 <?php
 // apropos.php : page de présentation du projet Votendo
+require_once __DIR__ . '/../includes/header.php';
 ?>
-
-<?php include '../includes/header.php'; ?>
 
 <main class="page page--contact"><!-- on réutilise les marges de la page contact -->
 
@@ -86,4 +85,4 @@
   </div>
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

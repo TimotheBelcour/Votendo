@@ -1,6 +1,7 @@
 <?php
-// Inclure le fichier de configuration de la base de données
-include __DIR__ . '/config.php';
+// includes/header.php : en-tête commun à toutes les pages
+// Inclure le fichier de configuration pour la connexion à la base de données
+require_once __DIR__ . '/config.php';
 
 // Démarrer la session si elle n'est pas déjà active
 if (session_status() === PHP_SESSION_NONE) {

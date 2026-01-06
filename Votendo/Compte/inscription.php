@@ -1,9 +1,11 @@
 <?php
-include '../../includes/header.php';
-
+// inscription.php : page d'inscription des utilisateurs
+// Inclure les fichiers nécessaires
+require_once __DIR__ . '/../../includes/header.php';
+// Connexion à la base de données
 $errors = [];
 $success = false;
-
+// Champs du formulaire
 $nomUtilisateur = '';
 $email = '';
 $password = '';
@@ -209,4 +211,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </main>
 
-<?php include '../../includes/footer.php'; ?>
+<?php require_once __DIR__. '/../../includes/footer.php'; ?>

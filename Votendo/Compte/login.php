@@ -1,24 +1,20 @@
 <?php
 // login.php : page de connexion avec authentification réelle
-
-// Démarrer la session si elle n'est pas déjà active
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-include '../../includes/config.php';
-
+// Inclure les fichiers nécessaires
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/config.php';
+ensure_session_started();
+// Initialisation des variables
 $errors  = [];
 $success = false;
-
+// Champs du formulaire
 $email    = '';
 $password = '';
-
+// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupération + nettoyage
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-
     // Rechercher l'utilisateur par email
     $stmt = $conn->prepare("SELECT idutilisateur, nomUtilisateur, passwordHash, firstLogin FROM utilisateur WHERE email = ?");
     $stmt->execute([$email]);
@@ -85,8 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['general'] = 'Email ou mot de passe incorrect.';
     }
 }
-
-include '../../includes/header.php';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <main class="page page--login">
@@ -164,4 +159,4 @@ include '../../includes/header.php';
 
 </main>
 
-<?php include '../../includes/footer.php'; ?>
+<?php require_once __DIR__. '/../../includes/footer.php'; ?>

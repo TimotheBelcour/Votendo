@@ -1,32 +1,21 @@
 <?php
-require_once '../../includes/config.php';
-session_start();
+// admin_valider.php : page pour valider une candidature (mettre isValide = 1)
+// Nécessite que l'utilisateur soit connecté et soit administrateur
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/config.php';
 
-// Vérifier que seul un admin peut valider
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../Compte/login.php");
+require_role('admin', '../accesRefuse.php'); // depuis /Votendo/Admin -> ../accesRefuse.php
+// Récupérer l'idJeu depuis les paramètres GET
+$idJeu = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+if ($idJeu <= 0) {
+    header('Location: espaceAdmin.php');
     exit;
 }
-
+// Récupérer l'idUtilisateur depuis la session
 $userId = $_SESSION['user_id'];
 
-// Vérifier si admin
-
-$stmt = $conn->prepare("SELECT idAdministrateur FROM administrateur WHERE idUtilisateur = ?");
-$stmt->execute([$userId]);
-$res = $stmt->fetch();
-if (!$res) {
-    echo "Accès interdit.";
-    exit;
-}
-
-// Récupérer l'id du jeu
-$idJeu = $_GET['id'] ?? 0;
-
-
-// Mettre isValide = 1
+// Valider le jeu (isValide = 1)
 $stmt = $conn->prepare("UPDATE jeux SET isValide = 1 WHERE idJeu = ?");
 $stmt->execute([$idJeu]);
-
-header("Location: espaceAdmin.php");
+header('Location: espaceAdmin.php');
 exit;

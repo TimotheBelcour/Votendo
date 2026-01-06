@@ -3,7 +3,7 @@
 // Plus tard : récupérer l'id dans l'URL et charger le jeu depuis la BDD
 // $id = $_GET['id'] ?? null;
 
-include '../includes/header.php'
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <main class="page page--game">
@@ -79,6 +79,4 @@ include '../includes/header.php'
   </div>
 </main>
 
-<?php
-include '../includes/footer.php';
-?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
