@@ -28,6 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = 'Merci d’indiquer votre adresse e-mail.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'L’adresse e-mail n’est pas valide.';
+    } else {
+        // Bloquer si l'email correspond déjà à un compte existant (utilisateur)
+        $stmtCheckUser = $conn->prepare("SELECT 1 FROM utilisateur WHERE email = ? LIMIT 1");
+        $stmtCheckUser->execute([$email]);
+        if ($stmtCheckUser->fetchColumn()) {
+            $errors['email'] = 'Un compte existe déjà avec cette adresse e-mail. Connecte-toi et utilise ton espace candidat si besoin.';
+        } else {
+            // Éviter les demandes en double (même email déjà en attente)
+            $stmtCheckDemand = $conn->prepare("SELECT 1 FROM demandes_candidature WHERE email = ? LIMIT 1");
+            $stmtCheckDemand->execute([$email]);
+            if ($stmtCheckDemand->fetchColumn()) {
+                $errors['email'] = 'Une demande avec cette adresse e-mail est déjà en attente de validation.';
+            }
+        }
     }
 
     // Validation : Description
