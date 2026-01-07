@@ -51,11 +51,6 @@ if (isset($_GET['action'], $_GET['idDemande'])) {
                 $stmtCandidat = $conn->prepare("INSERT INTO candidats (idUtilisateur) VALUES (?)");
                 $stmtCandidat->execute([$newIdUtilisateur]);
 
-                // Insérer dans votants
-                $tokenVotants = substr(bin2hex(random_bytes(23)), 0, 45);
-                $stmtVotant = $conn->prepare("INSERT INTO votants (idUtilisateur, tokenVotants) VALUES (?, ?)");
-                $stmtVotant->execute([$newIdUtilisateur, $tokenVotants]);
-
                 // Supprimer la demande
                 $stmtDelete = $conn->prepare("DELETE FROM demandes_candidature WHERE idDemande = ?");
                 $stmtDelete->execute([$idDemande]);

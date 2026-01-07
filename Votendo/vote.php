@@ -1,9 +1,35 @@
 <?php
 // vote.php : page de vote pour les utilisateurs connectés avec un token de votant valide
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
-// connecté + token votant obligatoire
+
+ensure_session_started();
 require_login('Compte/login.php');
-require_session_key('tokenVotants', 'Compte/login.php');
+
+$userId = (int)($_SESSION['user_id'] ?? 0);
+$role   = $_SESSION['role'] ?? '';
+
+// Seuls les membres peuvent voter
+$canVote = ($role === 'membre');
+
+// Token votant uniquement si membre
+$token = null;
+if ($canVote) {
+    $stmt = $conn->prepare("SELECT tokenVotants FROM votants WHERE idUtilisateur = ? LIMIT 1");
+    $stmt->execute([$userId]);
+    $token = $stmt->fetchColumn();
+
+    // Si un membre n'a pas de token -> accès refusé (cas anormal)
+    if (!$token) {
+        header('Location: accesRefuse.php');
+        exit;
+    }
+    // 2) Mettre/rafraîchir le token en session (évite token périmé)
+    $_SESSION['tokenVotants'] = $token;
+} else {
+    // Sécurité : admin/candidat ne doit pas garder un token en session
+    unset($_SESSION['tokenVotants']);
+}
 require_once __DIR__ . '/../includes/header.php';
 // Initialisation des messages
 $successMsg = '';
@@ -11,37 +37,52 @@ $errorMsg = '';
 
 // Traitement du vote
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idJeu'])) {
-    $idJeu = (int)$_POST['idJeu'];
-    $token = $_SESSION['tokenVotants'];
+    // Si pas membre => pas de vote
+    if (!$canVote) {
+        $errorMsg = "Tu peux consulter les jeux, mais seuls les membres peuvent voter.";
+    } else {
+        $idJeu = (int)($_POST['idJeu'] ?? 0);
+        $token = $_SESSION['tokenVotants'] ?? null;
 
-    try {
-        // Vérifier que le jeu est valide
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM jeux WHERE idJeu = ? AND isValide = 1");
-        $stmt->execute([$idJeu]);
-
-        if ((int)$stmt->fetchColumn() === 0) {
-            $errorMsg = "Jeu invalide.";
+        if (!$token) {
+            // sécurité (ne devrait pas arriver si $canVote)
+            $errorMsg = "Token de vote manquant.";
         } else {
-            // Insert : si l'utilisateur a déjà voté, ça déclenche l'unicité
-            $stmt = $conn->prepare("INSERT INTO votes (tokenVotants, idJeu, `timestamp`) VALUES (?, ?, CURDATE())");
-            $stmt->execute([$token, $idJeu]);
+            try {
+                // Vérifier que le jeu est valide
+                $stmt = $conn->prepare("SELECT COUNT(*) FROM jeux WHERE idJeu = ? AND isValide = 1");
+                $stmt->execute([$idJeu]);
 
-            $successMsg = "Vote enregistré ! Merci.";
-        }
-    } catch (PDOException $e) {
-        // 1062 = duplicate entry (déjà voté)
-        if (isset($e->errorInfo[1]) && (int)$e->errorInfo[1] === 1062) {
-            $errorMsg = "Tu as déjà voté pour cette édition.";
-        } else {
-            $errorMsg = "Erreur lors de l'enregistrement du vote.";
+                if ((int)$stmt->fetchColumn() === 0) {
+                    $errorMsg = "Jeu invalide.";
+                } else {
+                    // Insert : si déjà voté, l’unicité doit bloquer en BDD (unique sur tokenVotants, ou tokenVotants+édition)
+                    $stmt = $conn->prepare("INSERT INTO votes (tokenVotants, idJeu, `timestamp`) VALUES (?, ?, NOW())");
+                    $stmt->execute([$token, $idJeu]);
+
+                    $successMsg = "Vote enregistré ! Merci.";
+                }
+            } catch (PDOException $e) {
+                // 1062 = duplicate entry (déjà voté)
+                if (isset($e->errorInfo[1]) && (int)$e->errorInfo[1] === 1062) {
+                    $errorMsg = "Tu as déjà voté pour cette édition.";
+                } else {
+                    $errorMsg = "Erreur lors de l'enregistrement du vote.";
+                }
+            }
         }
     }
 }
 // --- Vérifier si l'utilisateur a déjà voté ---
-$stmt = $conn->prepare("SELECT idJeu FROM votes WHERE tokenVotants = ? LIMIT 1");
-$stmt->execute([$_SESSION['tokenVotants']]);
-$alreadyVotedGameId = $stmt->fetchColumn();
-$hasVoted = ($alreadyVotedGameId !== false);
+// On ne peut vérifier que si membre + token
+$hasVoted = false;
+$alreadyVotedGameId = null;
+if ($canVote && !empty($_SESSION['tokenVotants'])) {
+  $stmt = $conn->prepare("SELECT idJeu FROM votes WHERE tokenVotants = ? LIMIT 1");
+  $stmt->execute([$_SESSION['tokenVotants']]);
+  $alreadyVotedGameId = $stmt->fetchColumn();
+  $hasVoted = ($alreadyVotedGameId !== false);
+}
 ?>
 
 <?php
@@ -121,8 +162,13 @@ $result = $conn->query($sql);
                             <!-- Formulaire de vote -->
                             <form method="POST" action="vote.php">
                               <input type="hidden" name="idJeu" value="<?= (int)$jeu['idJeu'] ?>">
+
+                              <?php if (!$canVote): ?>
+                                <button class="btn btn--primary game-card__button" type="button" disabled>
+                                  Vote réservé aux membres
+                                </button>
                               <!-- Désactiver le bouton si l'utilisateur a déjà voté -->
-                              <?php if ($hasVoted): ?>
+                              <?php elseif ($hasVoted): ?>
                                 <button class="btn btn--primary game-card__button" type="button" disabled>
                                   Déjà voté
                                 </button>

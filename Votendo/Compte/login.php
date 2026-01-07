@@ -44,24 +44,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Stocker le token en session
             $_SESSION['tokenVotants'] = $token;
             session_regenerate_id(true);
-            // Déterminer le rôle de l'utilisateur (sans table roles)
+            // 1) Déterminer le rôle avant le token
             $role = 'membre';
-
             // Admin ?
             $stmt = $conn->prepare("SELECT 1 FROM administrateur WHERE idUtilisateur = ? LIMIT 1");
-            $stmt->execute([$_SESSION['user_id']]);
+            $stmt->execute([$user['idutilisateur']]);
             if ($stmt->fetchColumn()) {
                 $role = 'admin';
             } else {
                 // Candidat ?
                 $stmt = $conn->prepare("SELECT 1 FROM candidats WHERE idUtilisateur = ? LIMIT 1");
-                $stmt->execute([$_SESSION['user_id']]);
+                $stmt->execute([$user['idutilisateur']]);
                 if ($stmt->fetchColumn()) {
                     $role = 'candidat';
                 }
             }
 
             $_SESSION['role'] = $role;
+
+            // 2) Gestion du token votant UNIQUEMENT si membre
+            if ($role === 'membre') {
+                $stmtToken = $conn->prepare("SELECT tokenVotants FROM votants WHERE idUtilisateur = ? LIMIT 1");
+                $stmtToken->execute([$user['idutilisateur']]);
+                $token = $stmtToken->fetchColumn();
+
+                if (!$token) {
+                    $token = bin2hex(random_bytes(32));
+                    $stmtInsert = $conn->prepare(
+                        "INSERT INTO votants (idUtilisateur, tokenVotants) VALUES (?, ?)"
+                    );
+                    $stmtInsert->execute([$user['idutilisateur'], $token]);
+                }
+
+                $_SESSION['tokenVotants'] = $token;
+            } else {
+                // Sécurité : s’assurer qu’un admin/candidat n’a pas de token en session
+                unset($_SESSION['tokenVotants']);
+            }
 
             // Vérifier si première connexion
             if ($user['firstLogin'] == 1) {
