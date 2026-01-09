@@ -484,6 +484,16 @@ details[open] .reglement-summary::before {
   vertical-align: middle;
 }
 
+.game-card__link{
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.game-card__link:hover{
+  text-decoration: none;
+}
+
 /* Responsive : 2 colonnes, puis 1 */
 @media (max-width: 1000px) {
   .game-list__grid {
@@ -694,6 +704,45 @@ details[open] .reglement-summary::before {
   width: 100%;
   height: auto;
   object-fit: contain;              /* on montre toute l'image */
+}
+
+/* Layout 2 colonnes */
+.game-detail__layout{
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Colonne gauche */
+.game-detail__media{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Vidéo responsive (16/9) */
+.game-detail__video-frame{
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16/9 */
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.game-detail__video-frame iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Responsive mobile */
+@media (max-width: 900px){
+  .game-detail__layout{
+    grid-template-columns: 1fr;
+  }
 }
 
 /* PAGE ADMIN */

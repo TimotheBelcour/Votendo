@@ -127,66 +127,63 @@ $result = $conn->query($sql);
               <?php while ($jeu = $result->fetch()): ?>
                 <?php
                   $imageSrc = $jeu['imagePath'] ?? '';
+                  $gameUrl = 'jeu.php?id=' . (int)$jeu['idJeu'];  
                   if ($imageSrc && !preg_match('#^https?://#', $imageSrc)) {
                     $imageSrc = '../' . ltrim($imageSrc, '/');
                   }
                 ?>
-                    <article class="game-card">
-                        <div class="game-card__image-wrapper">
-                            <img
-                                src="<?php echo htmlspecialchars($imageSrc); ?>"
-                                alt="<?php echo htmlspecialchars($jeu['titre']); ?>"
-                                class="game-card__image"
-                            >
-                            <span class="game-card__tag">
-                                <?php echo htmlspecialchars($jeu['studio']); ?>
-                            </span>
-                        </div>
+                <article class="game-card">
+                  <a class="game-card__link" href="<?= htmlspecialchars($gameUrl) ?>">
+                    <div class="game-card__image-wrapper">
+                      <img
+                        src="<?= htmlspecialchars($imageSrc) ?>"
+                        alt="<?= htmlspecialchars($jeu['titre']) ?>"
+                        class="game-card__image"
+                      >
+                      <span class="game-card__tag"><?= htmlspecialchars($jeu['studio']) ?></span>
+                    </div>
 
-                        <div class="game-card__body">
-                          <h3 class="game-card__title">
-                            <?php echo htmlspecialchars($jeu['titre']); ?>
-                          </h3>
-                          <!-- Indiquer si c'est le jeu pour lequel l'utilisateur a voté -->
-                          <?php if ($hasVoted && (int)$alreadyVotedGameId === (int)$jeu['idJeu']): ?>
-                            <p class="game-card__badge">Ton vote</p>
-                          <?php endif; ?>
+                    <div class="game-card__body">
+                      <h3 class="game-card__title"><?= htmlspecialchars($jeu['titre']) ?></h3>
 
-                            <p class="game-card__meta">
-                                <?php echo htmlspecialchars($jeu['dateSortie']); ?>
-                            </p>
+                      <?php if ($hasVoted && (int)$alreadyVotedGameId === (int)$jeu['idJeu']): ?>
+                        <p class="game-card__badge">Ton vote</p>
+                      <?php endif; ?>
 
-                            <p class="game-card__description">
-                                <?php echo htmlspecialchars($jeu['resume']); ?>
-                            </p>
-                            <!-- Formulaire de vote -->
-                            <form method="POST" action="vote.php">
-                              <input type="hidden" name="idJeu" value="<?= (int)$jeu['idJeu'] ?>">
+                      <p class="game-card__meta"><?= htmlspecialchars($jeu['dateSortie']) ?></p>
 
-                              <?php if (!$canVote): ?>
-                                <button class="btn btn--primary game-card__button" type="button" disabled>
-                                  Vote réservé aux membres
-                                </button>
-                              <!-- Désactiver le bouton si l'utilisateur a déjà voté -->
-                              <?php elseif ($hasVoted): ?>
-                                <button class="btn btn--primary game-card__button" type="button" disabled>
-                                  Déjà voté
-                                </button>
-                              <!-- Sinon, afficher le bouton de vote -->  
-                              <?php else: ?>
-                                <button class="btn btn--primary game-card__button" type="submit">
-                                  Voter pour ce jeu
-                                </button>
-                              <?php endif; ?>
-                            </form>
-                        </div>
-                    </article>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <p>Aucun jeu en compétition pour le moment.</p>
-            <?php endif; ?>
+                      <p class="game-card__description">
+                        <?= htmlspecialchars($jeu['resume']) ?>
+                      </p>
+                    </div>
+                  </a>
+                  <!-- Formulaire de vote -->
+                  <form method="POST" action="vote.php">
+                    <input type="hidden" name="idJeu" value="<?= (int)$jeu['idJeu'] ?>">
+
+                    <?php if (!$canVote): ?>
+                      <button class="btn btn--primary game-card__button" type="button" disabled>
+                        Vote réservé aux membres
+                      </button>
+                  <!-- Désactiver le bouton si l'utilisateur a déjà voté -->
+                  <?php elseif ($hasVoted): ?>
+                    <button class="btn btn--primary game-card__button" type="button" disabled>
+                      Déjà voté
+                    </button>
+                  <!-- Sinon, afficher le bouton de vote -->  
+                  <?php else: ?>
+                    <button class="btn btn--primary game-card__button" type="submit">
+                      Voter pour ce jeu
+                    </button>
+                  <?php endif; ?>
+                </form>
+              </article>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <p>Aucun jeu en compétition pour le moment.</p>
+          <?php endif; ?>
         </div>
-      </div>
+    </div>
   </section>
 
 </main>
