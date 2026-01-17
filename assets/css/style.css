@@ -1,3 +1,94 @@
+.game-card form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+/* Uniformisation des boîtes de jeux */
+/* Cartes de jeux : largeur et hauteur uniformes, plus compactes */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  min-height: 350px;
+  max-height: 350px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+.game-card__image-wrapper {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+}
+.game-card__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+.game-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 12px 12px 0 12px;
+}
+.game-card__title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.game-card__description {
+  flex: 1;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.game-card__button {
+  margin-top: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Catégorie : scroll horizontal pour les jeux */
+.category-row {
+  margin-bottom: 32px;
+}
+.category-title {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+.category-games-scroll {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--red) var(--bg-panel);
+}
+.category-games-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.category-games-scroll::-webkit-scrollbar-thumb {
+  background: var(--red);
+  border-radius: 8px;
+}
+.category-games-scroll::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+}
 .carousel__container {
   position: relative;
   width: 900px;

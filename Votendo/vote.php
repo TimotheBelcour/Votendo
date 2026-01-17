@@ -85,23 +85,28 @@ if ($canVote && !empty($_SESSION['tokenVotants'])) {
 }
 ?>
 
+
 <?php
-// Récupérer tous les jeux validés
-$sql = "SELECT idJeu, titre, studio, dateSortie, imagePath, resume 
-        FROM jeux
-        WHERE isValide = 1";
-$result = $conn->query($sql);
+// Récupérer toutes les catégories
+$categories = $conn->query("SELECT idCategorie, nomCategorie FROM categorie ORDER BY nomCategorie")->fetchAll(PDO::FETCH_ASSOC);
+
+// Récupérer les jeux par catégorie
+$catJeux = [];
+foreach ($categories as $cat) {
+    $stmt = $conn->prepare("SELECT j.idJeu, j.titre, j.studio, j.dateSortie, j.imagePath, j.resume FROM jeux j INNER JOIN nominations n ON n.idJeux = j.idJeu WHERE j.isValide = 1 AND n.idCategories = ?");
+    $stmt->execute([$cat['idCategorie']]);
+    $catJeux[$cat['idCategorie']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <main class="page page--vote">
-
   <!-- Bandeau d’intro -->
   <section class="vote-hero">
     <div class="container">
       <p class="hero__eyebrow">Vote</p>
       <h1 class="hero__title">Choisis ton jeu de l’année</h1>
       <p class="hero__subtitle">
-        Parcours les jeux nominés et sélectionne celui que tu considères comme le meilleur GOTY.
+        Parcours les jeux nominés et sélectionne celui que tu considères comme le meilleur GOTY dans chaque catégorie.
       </p>
     </div>
   </section>
@@ -109,25 +114,27 @@ $result = $conn->query($sql);
   <?php if (!empty($successMsg)): ?>
     <div class="alert alert--success"><?php echo htmlspecialchars($successMsg); ?></div>
   <?php endif; ?>
-
   <?php if (!empty($errorMsg)): ?>
     <div class="alert alert--error"><?php echo htmlspecialchars($errorMsg); ?></div>
   <?php endif; ?>
 
-  <!-- Liste des jeux -->
+  <!-- Liste des jeux par catégorie -->
   <section class="game-list">
     <div class="container">
       <header class="game-list__header">
-        <h2>Jeux en compétition</h2>
-        <p>Voici la sélection Votendo pour cette édition.</p>
+        <h2>Jeux en compétition par catégorie</h2>
+        <p>Fais ton choix dans chaque catégorie !</p>
       </header>
 
-        <div class="game-list__grid">
-            <?php if ($result && $result->rowCount() > 0): ?>
-              <?php while ($jeu = $result->fetch()): ?>
+      <?php foreach ($categories as $cat): ?>
+        <div class="category-row">
+          <h3 class="category-title"> <?= htmlspecialchars($cat['nomCategorie']) ?> </h3>
+          <div class="category-games-scroll">
+            <?php if (!empty($catJeux[$cat['idCategorie']])): ?>
+              <?php foreach ($catJeux[$cat['idCategorie']] as $jeu): ?>
                 <?php
                   $imageSrc = $jeu['imagePath'] ?? '';
-                  $gameUrl = 'jeu.php?id=' . (int)$jeu['idJeu'];  
+                  $gameUrl = 'jeu.php?id=' . (int)$jeu['idJeu'];
                   if ($imageSrc && !preg_match('#^https?://#', $imageSrc)) {
                     $imageSrc = '../' . ltrim($imageSrc, '/');
                   }
@@ -142,16 +149,9 @@ $result = $conn->query($sql);
                       >
                       <span class="game-card__tag"><?= htmlspecialchars($jeu['studio']) ?></span>
                     </div>
-
                     <div class="game-card__body">
                       <h3 class="game-card__title"><?= htmlspecialchars($jeu['titre']) ?></h3>
-
-                      <?php if ($hasVoted && (int)$alreadyVotedGameId === (int)$jeu['idJeu']): ?>
-                        <p class="game-card__badge">Ton vote</p>
-                      <?php endif; ?>
-
                       <p class="game-card__meta"><?= htmlspecialchars($jeu['dateSortie']) ?></p>
-
                       <p class="game-card__description">
                         <?= htmlspecialchars($jeu['resume']) ?>
                       </p>
@@ -160,32 +160,30 @@ $result = $conn->query($sql);
                   <!-- Formulaire de vote -->
                   <form method="POST" action="vote.php">
                     <input type="hidden" name="idJeu" value="<?= (int)$jeu['idJeu'] ?>">
-
                     <?php if (!$canVote): ?>
                       <button class="btn btn--primary game-card__button" type="button" disabled>
                         Vote réservé aux membres
                       </button>
-                  <!-- Désactiver le bouton si l'utilisateur a déjà voté -->
-                  <?php elseif ($hasVoted): ?>
-                    <button class="btn btn--primary game-card__button" type="button" disabled>
-                      Déjà voté
-                    </button>
-                  <!-- Sinon, afficher le bouton de vote -->  
-                  <?php else: ?>
-                    <button class="btn btn--primary game-card__button" type="submit">
-                      Voter pour ce jeu
-                    </button>
-                  <?php endif; ?>
-                </form>
-              </article>
-            <?php endwhile; ?>
-          <?php else: ?>
-            <p>Aucun jeu en compétition pour le moment.</p>
-          <?php endif; ?>
+                    <?php elseif ($hasVoted): ?>
+                      <button class="btn btn--primary game-card__button" type="button" disabled>
+                        Déjà voté
+                      </button>
+                    <?php else: ?>
+                      <button class="btn btn--primary game-card__button" type="submit">
+                        Voter pour ce jeu
+                      </button>
+                    <?php endif; ?>
+                  </form>
+                </article>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p>Aucun jeu dans cette catégorie.</p>
+            <?php endif; ?>
+          </div>
         </div>
+      <?php endforeach; ?>
     </div>
   </section>
-
 </main>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
