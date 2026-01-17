@@ -1,3 +1,192 @@
+.carousel__container {
+  position: relative;
+  width: 900px;
+  max-width: 98vw;
+  aspect-ratio: 16/7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* Carrousel 3 images, image centrale 100% */
+/* Carrousel simple : une image, largeur 100% */
+.carousel__slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.carousel__container {
+  position: relative;
+  width: 900px;
+  max-width: 98vw;
+  aspect-ratio: 16/7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel__slide {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  transition: transform 0.6s cubic-bezier(.4,0,.2,1), background-image 0.5s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+}
+.carousel__slide--move {
+  transform: translateX(100%);
+}
+.carousel__slide--reset {
+  transform: translateX(0);
+}
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.25);
+  border: none;
+  color: #fff;
+  font-size: 2.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.carousel__arrow:hover {
+  background: rgba(230,0,18,0.85);
+}
+.carousel__prev {
+  left: 0;
+}
+.carousel__next {
+  right: 0;
+}
+/* === CAROUSEL ACCUEIL === */
+.carousel {
+  width: 100vw;
+  background: var(--bg-panel);
+  padding: 32px 0 32px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.carousel__container {
+  position: relative;
+  width: 900px;
+  max-width: 98vw;
+  aspect-ratio: 16/7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel__slide {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  transition: background-image 0.5s cubic-bezier(.4,0,.2,1);
+}
+.carousel__overlay {
+  width: 100%;
+  background: linear-gradient(0deg,rgba(0,0,0,0.7) 60%,rgba(0,0,0,0.1) 100%);
+  color: #fff;
+  padding: 32px 40px 24px 40px;
+  position: absolute;
+  left: 0; bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.carousel__logo {
+  margin-bottom: 8px;
+}
+.carousel__title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.carousel__subtitle {
+  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+.carousel__cta {
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 24px;
+  padding: 10px 28px;
+  margin-top: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  transition: background 0.2s;
+}
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.25);
+  border: none;
+  color: #fff;
+  font-size: 2.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.carousel__arrow:hover {
+  background: rgba(230,0,18,0.85);
+}
+.carousel__prev {
+  left: -24px;
+}
+.carousel__next {
+  right: -24px;
+}
+@media (max-width: 1000px) {
+  .carousel__container { width: 99vw; }
+  .carousel__slide { border-radius: var(--radius-md); }
+  .carousel__overlay { padding: 18px 12px 16px 12px; }
+  .carousel__title { font-size: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .carousel__container { aspect-ratio: 1.2/1; }
+  .carousel__overlay { padding: 10px 6px 10px 6px; }
+  .carousel__title { font-size: 1rem; }
+  .carousel__cta { font-size: 0.9rem; padding: 7px 16px; }
+}
 :root {
   --red: #E60012;                          /* Rouge Nintendo */
 
