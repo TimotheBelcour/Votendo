@@ -726,6 +726,7 @@ details[open] .reglement-summary::before {
   padding: 12px 14px 16px;
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 6px;
 }
 
@@ -748,9 +749,8 @@ details[open] .reglement-summary::before {
 
 /* Bouton dans la carte */
 .game-card__button {
+  margin-top: 12px;          /* petit espace avec le texte */
   align-self: flex-start;
-  font-size: 13px;
-  padding: 8px 18px;
 }
 /* Badge indiquant le jeu voté */
 .game-card__badge {
@@ -765,9 +765,17 @@ details[open] .reglement-summary::before {
 }
 
 .game-card__link{
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   color: inherit;
   text-decoration: none;
+}
+
+.game-card form{
+  margin-top: auto;
+  padding: 0 14px 14px;     
 }
 
 .game-card__link:hover{
